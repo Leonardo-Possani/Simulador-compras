@@ -10,7 +10,7 @@ def carregar_carrinho():
 def limpar_carrinho():
     with open("../data/carrinho.json", "w", encoding="utf-8") as f:
         json.dump([], f, indent=4)
-        f.flush()
+    return []    
 
 
 def lista_existe(lista):

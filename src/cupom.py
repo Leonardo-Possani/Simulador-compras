@@ -45,3 +45,4 @@ def cupom_fiscal(produtos, lista):
 
     print("OBRIGADO PELA PREFERÊNCIA! VOLTE SEMPRE ")
     limpar_carrinho()
+    lista.clear()
