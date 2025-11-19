@@ -1,4 +1,5 @@
 from utils import clear
+from carrinho import limpar_carrinho
 
 def cupom_fiscal(produtos, lista):
     """gera o cupom fiscal"""
@@ -43,5 +44,4 @@ def cupom_fiscal(produtos, lista):
     print("\n" + "-" * 60)
 
     print("OBRIGADO PELA PREFERÊNCIA! VOLTE SEMPRE ")
-
-
+    limpar_carrinho()
