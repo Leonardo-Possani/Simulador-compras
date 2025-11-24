@@ -3,10 +3,8 @@ import platform
 
 
 def clear():
-    """limpa a tela"""
+    """Limpa a tela."""
     if platform.system() == "Windows":
         os.system("cls")
     else:
         os.system("clear")
-
-

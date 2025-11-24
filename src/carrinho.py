@@ -1,55 +1,59 @@
 from utils import clear
+from produtos import produtos_disponivei_estoque
 import json
 
 
 def carregar_carrinho():
+    """Carrega o arquivo carrinho.json"""
     with open("../data/carrinho.json", "r", encoding="utf-8") as f:
-        lista_compras = json.load(f)
-    return lista_compras
+        carrinho = json.load(f)
+    return carrinho
+
 
 def limpar_carrinho():
+    """Limpa os itens do carrinho, atribuindo uma lista []."""
     with open("../data/carrinho.json", "w", encoding="utf-8") as f:
         json.dump([], f, indent=4)
-    return []    
+    return []
 
 
 def lista_existe(lista):
-    """Verifica se tem produtos cadastrados no carrinho"""
+    """Verifica se tem produtos cadastrados no carrinho."""
     return bool(lista)
 
 
 def adicionar_ao_carrinho(produtos, carrinho):
-    """Adiciona produto e quantidade a lista_compras retorna string confirmando ou apontando o erro"""
-    produto = input("\nProduto: ").strip().lower()
-    if produto not in produtos:
-        clear()
-        return f"\nO Produto: {produto} não está na lista de produtos disponíveis."
+    """Adiciona produto e quantidade ao carrinho retorna string confirmando ou apontando o erro."""
+    clear()
+    produtos_disponivei_estoque(produtos)
     try:
-        quantidade = int(input("Quantidade: ").strip())
-        if quantidade <= 0:
-            clear()
-            return "\nA quantidade deve ser maior que zero."
+        adicionar = int(input("\nNúmero do produto: ").strip())
+        if adicionar <= 0:
+            print("\nDigite um valor maior que zero.")
+        qtd = int(input("Quantidade: ").strip())
+        if qtd <= 0:
+            print("\nDigite um valor maior que zero.")
     except ValueError:
-        clear()
-        return "\nDigite um número valido."
-    carrinho.append({"produto": produto, "qtd": quantidade})
+        print("\nDigite um valor valido.")
+    produto = produtos[adicionar - 1]
+    produto["qtd"] = qtd
+    nome = produto["produto"]
+    carrinho.append(produto)
     with open("../data/carrinho.json", "w", encoding="utf-8") as f:
         json.dump(carrinho, f, indent=4, ensure_ascii=False)
     clear()
-    return "\nProduto adicionado ao carrinho com sucesso !"
+    return print(f"\nProduto: {nome} undades: {qtd} foram adicionados ao carrinho. ")
 
-
-def mostra_carrinho(produtos, carrinho):
-    """Mostra os produtos do carrinho, valores individuais e total com desconto."""
+def mostra_carrinho(carrinho):
+    """Mostra os produtos do carrinho, valores, quantidade e total com desconto."""
     clear()
     print("\n--- Produtos no carrinho ---\n")
 
     total_bruto = 0
-    for item in carrinho:
-        nome = item["produto"]
-        qtd = item["qtd"]
-        preco = produtos[nome]
-        subtotal = qtd * preco
+    for produto in carrinho:
+        nome = produto["produto"]
+        qtd = produto["qtd"]
+        subtotal = produto["qtd"] * produto["preco"]
         total_bruto += subtotal
         print(f" - {nome:<10} x{qtd:<3} Subtotal: R${subtotal:.2f}")
 

@@ -1,8 +1,9 @@
 from utils import clear
 from carrinho import limpar_carrinho
 
-def cupom_fiscal(produtos, lista):
-    """gera o cupom fiscal"""
+
+def cupom_fiscal(carrinho):
+    """gera o cupom fiscal, limpa o carrinho.json, limpa o carrinho na memoria."""
     clear()
     print("\n" + "-" * 60)
     print("               ELETRONICA TEIGO")
@@ -14,10 +15,10 @@ def cupom_fiscal(produtos, lista):
     print("\n" + "-" * 60)
     total_bruto = 0
     desconto = 0
-    for index, produto in enumerate(lista, start=1):
+    for index, produto in enumerate(carrinho, start=1):
         nome = produto["produto"]
         qtd = produto["qtd"]
-        preco = produtos[nome]
+        preco = produto["preco"]
         subtotal = qtd * preco
         total_bruto += subtotal
         print(
@@ -45,4 +46,4 @@ def cupom_fiscal(produtos, lista):
 
     print("OBRIGADO PELA PREFERÊNCIA! VOLTE SEMPRE ")
     limpar_carrinho()
-    lista.clear()
+    carrinho.clear()

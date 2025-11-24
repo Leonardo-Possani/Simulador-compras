@@ -1,46 +1,54 @@
 from menu import exibir_menu
-from produtos import carregar_produtos
+from produtos import (
+    carregar_produtos,
+    adicionar_produto_estoque,
+    produtos_disponivei_estoque,
+    remover_produto_estoque,
+)
 from carrinho import (
-        lista_existe,
-        adicionar_ao_carrinho,
-        mostra_carrinho,
-        carregar_carrinho,
+    lista_existe,
+    adicionar_ao_carrinho,
+    mostra_carrinho,
+    carregar_carrinho,
 )
 from cupom import cupom_fiscal
 from utils import clear
 
 
 def main():
-    """Main controla o fluxo da aplicação"""
-    produtos = carregar_produtos()
+    """Main controla o fluxo da aplicação."""
+    estoque = carregar_produtos()
     carrinho = carregar_carrinho()
     while True:
         escolha = exibir_menu()
         match escolha:
-            case 5:
+            case 7:
                 clear()
                 print("\nSaindo...")
                 break
-            case 1:
+            case 4:
                 clear()
-                for produto, valor in produtos.items():
-                    print(f"Produto: {produto:<6} R${valor:.2f}")
+                produtos_disponivei_estoque(estoque)
+            case 1:
+                adicionar_ao_carrinho(estoque, carrinho)
 
             case 2:
-                print(adicionar_ao_carrinho(produtos, carrinho))
-
+                if lista_existe(carrinho):
+                    mostra_carrinho(carrinho)
+                else:
+                    clear()
+                    print("Adicione produtos ao carrinho.")
             case 3:
                 if lista_existe(carrinho):
-                    mostra_carrinho(produtos, carrinho)
+                    cupom_fiscal(carrinho)
                 else:
                     clear()
                     print("Adicione produtos ao carrinho.")
-            case 4:
-                if lista_existe(carrinho):
-                    cupom_fiscal(produtos, carrinho)
-                else:
-                    clear()
-                    print("Adicione produtos ao carrinho.")
+            case 5:
+                adicionar_produto_estoque(estoque)
+            case 6:
+                clear()
+                remover_produto_estoque(estoque)
 
 
 if __name__ == "__main__":
