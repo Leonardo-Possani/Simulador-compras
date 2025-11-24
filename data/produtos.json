@@ -1,0 +1,22 @@
+[
+    {
+        "produto": "mouse logtec",
+        "qtd": 5,
+        "preco": 129.9
+    },
+    {
+        "produto": "monitor gamer",
+        "qtd": 3,
+        "preco": 999.9
+    },
+    {
+        "produto": "cabo hmdi 1m",
+        "qtd": 10,
+        "preco": 15.0
+    },
+    {
+        "produto": "teclado gamer",
+        "qtd": 5,
+        "preco": 79.9
+    }
+]

@@ -1,0 +1,17 @@
+[
+    {
+        "produto": "teclado gamer",
+        "qtd": 1,
+        "preco": 79.9
+    },
+    {
+        "produto": "cabo hmdi 1m",
+        "qtd": 1,
+        "preco": 15.0
+    },
+    {
+        "produto": "monitor gamer",
+        "qtd": 1,
+        "preco": 999.9
+    }
+]
