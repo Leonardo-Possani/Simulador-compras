@@ -2,7 +2,7 @@
     {
         "produto": "mouse logtec",
         "qtd": 5,
-        "preco": 129.9
+        "preco": 119.9
     },
     {
         "produto": "monitor gamer",
@@ -11,12 +11,17 @@
     },
     {
         "produto": "cabo hmdi 1m",
-        "qtd": 10,
+        "qtd": 8,
         "preco": 15.0
     },
     {
         "produto": "teclado gamer",
-        "qtd": 5,
+        "qtd": 4,
         "preco": 79.9
+    },
+    {
+        "produto": "Pilha AA",
+        "qtd": 6,
+        "preco": 2.5
     }
 ]

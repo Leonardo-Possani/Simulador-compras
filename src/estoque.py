@@ -54,11 +54,80 @@ def remover_produto_estoque(estoque):
         )
         if remover <= 0:
             print("\nDigite um número maior que zero.")
-            return 0
+            return
     except ValueError:
         print("\nDigite um número valido.")
+        return
 
     estoque.pop(remover - 1)
     with open("../data/produtos.json", "w", encoding="utf-8") as f:
         json.dump(estoque, f, indent=4, ensure_ascii=False)
     print("\nProduto removido com sucesso !")
+
+
+def editar_qtd_estoque(estoque):
+    """Edita Nome, qtd e preço de um produto individual mente, se o usuario não digitar nada ele manten os valores antigos."""
+    produtos_disponivei_estoque(estoque)
+    print("\nEscolha o produto:")
+
+    try:
+        editar = input("Produto: ").strip()
+        if not editar.isdigit():
+            clear()
+            print("Digite um número válido.")
+            return
+        editar = int(editar)
+        if editar <= 0 or editar > len(estoque):
+            clear()
+            print("Produto inexistente.")
+            return
+    except ValueError:
+        clear()
+        print("Entrada inválida.")
+        return
+
+    indice = editar - 1
+    produto = estoque[indice]
+
+    nome_atual = produto["produto"]
+    qtd_atual = produto["qtd"]
+    preco_atual = produto["preco"]
+
+    novo_nome = input(f"Nome do produto [{nome_atual}]: ").strip()
+    if novo_nome == "":
+        novo_nome = nome_atual
+
+    entrada_qtd = input(f"Quantidade [{qtd_atual}]: ").strip()
+    if entrada_qtd == "":
+        nova_qtd = qtd_atual
+    else:
+        if not entrada_qtd.isdigit():
+            print("Quantidate inválida.")
+            return
+        nova_qtd = int(entrada_qtd)
+        if nova_qtd < 0:
+            print("Digite um valor positivo.")
+            return
+
+    entrada_preco = input(f"Preço [{preco_atual}]: ").strip()
+    if entrada_preco == "":
+        novo_preco = preco_atual
+    else:
+        try:
+            novo_preco = float(entrada_preco)
+        except ValueError:
+            print("Preço inválido.")
+            return
+        if novo_preco < 0:
+            print("Preço não pode ser negativo.")
+            return
+
+    estoque[indice]["produto"] = novo_nome
+    estoque[indice]["qtd"] = nova_qtd
+    estoque[indice]["preco"] = novo_preco
+
+    with open("../data/produtos.json", "w", encoding="utf-8") as f:
+        json.dump(estoque, f, indent=4, ensure_ascii=False)
+
+    clear()
+    print("Estoque alterado com sucesso")

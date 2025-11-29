@@ -1,5 +1,5 @@
 from utils import clear
-from produtos import produtos_disponivei_estoque
+from estoque import produtos_disponivei_estoque
 import json
 
 
@@ -28,13 +28,13 @@ def adicionar_ao_carrinho(produtos, carrinho):
     produtos_disponivei_estoque(produtos)
     try:
         adicionar = int(input("\nNúmero do produto: ").strip())
-        if adicionar <= 0:
-            print("\nDigite um valor maior que zero.")
         qtd = int(input("Quantidade: ").strip())
-        if qtd <= 0:
+        if adicionar <= 0 or qtd <= 0:
             print("\nDigite um valor maior que zero.")
+            return
     except ValueError:
         print("\nDigite um valor valido.")
+        return
     produto = produtos[adicionar - 1]
     produto["qtd"] = qtd
     nome = produto["produto"]
@@ -43,6 +43,7 @@ def adicionar_ao_carrinho(produtos, carrinho):
         json.dump(carrinho, f, indent=4, ensure_ascii=False)
     clear()
     return print(f"\nProduto: {nome} undades: {qtd} foram adicionados ao carrinho. ")
+
 
 def mostra_carrinho(carrinho):
     """Mostra os produtos do carrinho, valores, quantidade e total com desconto."""

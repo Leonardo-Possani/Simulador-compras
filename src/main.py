@@ -1,9 +1,10 @@
 from menu import exibir_menu
-from produtos import (
+from estoque import (
     carregar_produtos,
     adicionar_produto_estoque,
     produtos_disponivei_estoque,
     remover_produto_estoque,
+    editar_qtd_estoque
 )
 from carrinho import (
     lista_existe,
@@ -22,7 +23,7 @@ def main():
     while True:
         escolha = exibir_menu()
         match escolha:
-            case 7:
+            case 8:
                 clear()
                 print("\nSaindo...")
                 break
@@ -49,6 +50,9 @@ def main():
             case 6:
                 clear()
                 remover_produto_estoque(estoque)
+            case 7:
+                clear()
+                editar_qtd_estoque(estoque)
 
 
 if __name__ == "__main__":
