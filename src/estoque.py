@@ -9,13 +9,19 @@ def carregar_produtos():
     return estoque
 
 
+def gravar_estoque_json(estoque):
+    """Grava modificações no estoque no arquivo json, produtos.json."""
+    with open("../data/produtos.json", "w", encoding="utf-8") as f:
+        json.dump(estoque, f, indent=4, ensure_ascii=False)
+
+
 def produtos_disponivei_estoque(estoque):
     """Exibe os produtos disponíveis no estoque."""
     print("\n--- Produtos disponíveis ---")
     print()
     for i, produto in enumerate(estoque, start=1):
         print(
-            f"{i} | {produto['produto']} | quantidade: {produto['qtd']} | preço: R${produto['preco']:.2f}"
+            f"{i} | {produto['produto']} | Qtd: {produto['qtd']} | preço: R${produto['preco']:.2f}"
         )
 
 
@@ -39,8 +45,7 @@ def adicionar_produto_estoque(estoque):
         return "\nDigite um número valido."
 
     estoque.append({"produto": produto, "qtd": qtd, "preco": preco})
-    with open("../data/produtos.json", "w", encoding="utf-8") as f:
-        json.dump(estoque, f, indent=4, ensure_ascii=False)
+    gravar_estoque_json(estoque)
     clear()
     return "\nProduto cadastrado com sucesso !"
 
@@ -50,7 +55,7 @@ def remover_produto_estoque(estoque):
     produtos_disponivei_estoque(estoque)
     try:
         remover = int(
-            input("\nNumero de indice do produto que deseja remover.").strip()
+                input("\nProduto: ").strip()
         )
         if remover <= 0:
             print("\nDigite um número maior que zero.")
@@ -60,12 +65,11 @@ def remover_produto_estoque(estoque):
         return
 
     estoque.pop(remover - 1)
-    with open("../data/produtos.json", "w", encoding="utf-8") as f:
-        json.dump(estoque, f, indent=4, ensure_ascii=False)
+    gravar_estoque_json(estoque)
     print("\nProduto removido com sucesso !")
 
 
-def editar_qtd_estoque(estoque):
+def editar_produto_estoque(estoque):
     """Edita Nome, qtd e preço de um produto individual mente, se o usuario não digitar nada ele manten os valores antigos."""
     produtos_disponivei_estoque(estoque)
     print("\nEscolha o produto:")
@@ -126,8 +130,17 @@ def editar_qtd_estoque(estoque):
     estoque[indice]["qtd"] = nova_qtd
     estoque[indice]["preco"] = novo_preco
 
-    with open("../data/produtos.json", "w", encoding="utf-8") as f:
-        json.dump(estoque, f, indent=4, ensure_ascii=False)
+    gravar_estoque_json(estoque)
 
     clear()
     print("Estoque alterado com sucesso")
+
+
+def cupom_modifica_qtd_estoque(carrinho, estoque):
+    for produto in carrinho:
+        qtd = produto["qtd"]
+        indice = produto["indice"]
+        qtd_atual = estoque[indice]["qtd"]
+        nova_qtd = qtd_atual - qtd
+        estoque[indice]["qtd"] = nova_qtd
+    gravar_estoque_json(estoque)

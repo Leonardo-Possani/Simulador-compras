@@ -4,7 +4,7 @@ from estoque import (
     adicionar_produto_estoque,
     produtos_disponivei_estoque,
     remover_produto_estoque,
-    editar_qtd_estoque
+    editar_produto_estoque
 )
 from carrinho import (
     lista_existe,
@@ -18,6 +18,7 @@ from utils import clear
 
 def main():
     """Main controla o fluxo da aplicação."""
+
     estoque = carregar_produtos()
     carrinho = carregar_carrinho()
     while True:
@@ -31,7 +32,8 @@ def main():
                 clear()
                 produtos_disponivei_estoque(estoque)
             case 1:
-                adicionar_ao_carrinho(estoque, carrinho)
+                resposta = adicionar_ao_carrinho(estoque, carrinho)
+                print(resposta)
 
             case 2:
                 if lista_existe(carrinho):
@@ -41,7 +43,7 @@ def main():
                     print("Adicione produtos ao carrinho.")
             case 3:
                 if lista_existe(carrinho):
-                    cupom_fiscal(carrinho)
+                    cupom_fiscal(carrinho, estoque)
                 else:
                     clear()
                     print("Adicione produtos ao carrinho.")
@@ -52,7 +54,7 @@ def main():
                 remover_produto_estoque(estoque)
             case 7:
                 clear()
-                editar_qtd_estoque(estoque)
+                editar_produto_estoque(estoque)
 
 
 if __name__ == "__main__":
