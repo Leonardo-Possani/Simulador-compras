@@ -1,22 +1,36 @@
 [
     {
         "produto": "mouse logtec",
-        "qtd": 5,
-        "preco": 129.9
+        "qtd": 6,
+        "preco": 119.9,
+        "indice": 0
     },
     {
         "produto": "monitor gamer",
-        "qtd": 3,
-        "preco": 999.9
+        "qtd": 4,
+        "preco": 999.9,
+        "indice": 1
     },
     {
         "produto": "cabo hmdi 1m",
-        "qtd": 10,
-        "preco": 15.0
+        "qtd": 5,
+        "preco": 15.0,
+        "indice": 2
     },
     {
         "produto": "teclado gamer",
-        "qtd": 5,
-        "preco": 79.9
+        "qtd": 1,
+        "preco": 79.9,
+        "indice": 3
+    },
+    {
+        "produto": "CR XBOX ONE",
+        "qtd": 3,
+        "preco": 199.9
+    },
+    {
+        "produto": "Pendrive nano 32GB",
+        "qtd": 3,
+        "preco": 55.0
     }
 ]
