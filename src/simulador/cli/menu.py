@@ -1,4 +1,4 @@
-from utils import clear
+from simulador.utils import clear
 
 
 def exibir_menu():

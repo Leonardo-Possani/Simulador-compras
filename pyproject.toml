@@ -1,0 +1,72 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "simulador-compras"
+version = "0.1.0"
+description = "Simulador de compras organizado em camadas (domain, api, infra, cli)"
+readme = "README.md"
+license = {text = "MIT"}
+requires-python = ">=3.10"
+
+authors = [
+  { name = "Leonardo Possani" }
+]
+
+# Dependências de runtime (se houver)
+dependencies = [
+]
+
+[project.optional-dependencies]
+dev = [
+  "pytest",
+  "pytest-cov",
+  "ruff",
+  "pyright",
+]
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+# Descobre automaticamente todos os pacotes dentro de src/
+[tool.setuptools.packages.find]
+where = ["src"]
+
+# ------------------------------
+#       CONFIG DO PYTEST
+# ------------------------------
+[tool.pytest.ini_options]
+minversion = "7.0"
+addopts = "-v --disable-warnings"
+testpaths = [
+  "tests"
+]
+pythonpath = [
+  "src"
+]  
+
+# ------------------------------
+#       CONFIG DO RUFF
+# ------------------------------
+
+[tool.ruff]
+line-length = 100
+src = ["src"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP"]
+ignore = ["E501"]
+
+# ------------------------------
+#       CONFIG DO PYRIGHT
+# ------------------------------
+[tool.pyright]
+include = ["src"]
+pythonVersion = "3.13"
+extraPaths = [
+  "src",
+  "src/simulador"
+]
+typeCheckingMode = "off"  # Você pode mudar para "basic" ou "strict"
+

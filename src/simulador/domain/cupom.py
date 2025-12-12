@@ -1,6 +1,6 @@
-from utils import clear
-from carrinho import limpar_carrinho
-from estoque import cupom_modifica_qtd_estoque 
+from simulador.utils import clear
+from simulador.carrinho import limpar_carrinho
+from simulador.estoque import cupom_modifica_qtd_estoque 
 
 
 def cupom_fiscal(carrinho, estoque):

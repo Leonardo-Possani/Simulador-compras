@@ -1,17 +1,17 @@
 import json
-from utils import clear
+from simulador.utils import clear
 
 
 def carregar_produtos():
     """Carrega o arquivo produtos.json e atribuia estoque."""
-    with open("../data/produtos.json", "r", encoding="utf-8") as f:
+    with open("../../data/produtos.json", "r", encoding="utf-8") as f:
         estoque = json.load(f)
     return estoque
 
 
 def gravar_estoque_json(estoque):
     """Grava modificações no estoque no arquivo json, produtos.json."""
-    with open("../data/produtos.json", "w", encoding="utf-8") as f:
+    with open("../../data/produtos.json", "w", encoding="utf-8") as f:
         json.dump(estoque, f, indent=4, ensure_ascii=False)
 
 

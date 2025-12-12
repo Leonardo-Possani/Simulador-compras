@@ -1,20 +1,20 @@
-from menu import exibir_menu
-from estoque import (
+from .menu import exibir_menu
+from .estoque import (
     carregar_produtos,
     adicionar_produto_estoque,
     produtos_disponivei_estoque,
     remover_produto_estoque,
     editar_produto_estoque,
 )
-from carrinho import (
+from .carrinho import (
     lista_existe,
     adicionar_ao_carrinho,
     mostra_carrinho,
     carregar_carrinho,
     editar_remover_carrinho,
 )
-from cupom import cupom_fiscal
-from utils import clear
+from .cupom import cupom_fiscal
+from .utils import clear
 
 
 def main():
