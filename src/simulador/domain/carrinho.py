@@ -1,21 +1,23 @@
 
 def adicionar_item(carrinho, estoque, indice, quantidade):
-    novo_carrinho = []
-    if len(carrinho) > 0:
-        novo_item = {}
-        for item in carrinho:
-            if item["indice"] == indice:
-                item["qtd"] + 2
-            novo_item = item
-            novo_carrinho = carrinho
-        return novo_item, None, novo_carrinho
+    qtd_estoque = estoque[indice]["estoque"]   
+    if quantidade <= 0:
+        return None, "erro de quantidade", carrinho
 
-    else:        
-        produto = estoque[indice]
-        nome = produto["produto"]
-        preco = produto["preco"]
-        item = {"produto": nome, "preco": preco, "qtd": quantidade, "indice": indice}
-        return item, None
+    for item in carrinho:
+        if item["indice"] == indice:
+            qtd_atual_carrinho = item["qtd"] + quantidade
+            if qtd_atual_carrinho > qtd_estoque:
+                return None, "Erro quantidade indisponível no estoque.", carrinho
+                
+            item["qtd"] += quantidade
+            return item, None, carrinho
+        
+    produto = estoque[indice]
+    nome = produto["produto"]
+    preco = produto["preco"]
+    item = {"produto": nome, "preco": preco, "qtd": quantidade, "indice": indice}
+    return item, None, carrinho
 
 
 
