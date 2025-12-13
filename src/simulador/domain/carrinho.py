@@ -1,5 +1,9 @@
 
 def adicionar_item(carrinho, estoque, indice, quantidade):
+    
+    if not 0 <= indice < len(estoque):
+        return None, "Erro indice inexistente.", carrinho
+
     qtd_estoque = estoque[indice]["estoque"]   
     if quantidade <= 0:
         return None, "erro de quantidade", carrinho

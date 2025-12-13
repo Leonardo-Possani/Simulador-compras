@@ -52,6 +52,14 @@ def test_nao_permite_quantidade_maior_que_estoque():
     assert novo_carrinho == carrinho
     
 
+def test_nao_permite_indice_invalido():
+    
+    estoque = [{"produto": "mouse", "preco": 20.0, "estoque": 10}]
+    carrinho = []
+    
+    item, erro, novo_carrinho = carr.adicionar_item(carrinho, estoque, -1, 1)
 
-
+    assert item is None
+    assert erro is not None
+    assert novo_carrinho == carrinho 
 
