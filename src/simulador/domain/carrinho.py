@@ -46,5 +46,11 @@ def adicionar_item(carrinho, estoque, indice, quantidade):
     return item, None, carrinho
 
 
+def remover_item(carrinho, indice):
+    item = item_existe_no_carrinho(carrinho, indice)
+    if item: 
+        item_removido = carrinho.pop(indice)
+        return item_removido, None, carrinho
+    return None, "erro, item inexistente.", carrinho
 
 

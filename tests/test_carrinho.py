@@ -63,3 +63,21 @@ def test_nao_permite_indice_invalido():
     assert erro is not None
     assert novo_carrinho == carrinho 
 
+
+def test_remove_item_do_carrinho():
+    carrinho = [
+        {"produto": "mouse", "preco": 20.0, "qtd": 3, "indice": 0},
+        {"produto": "teclado", "preco": 50.0, "qtd": 1, "indice": 1},
+    ]
+
+    item, erro, novo_carrinho = carr.remover_item(carrinho, 0)
+
+    assert erro is None
+    assert item["produto"] == "mouse"
+    assert len(novo_carrinho) == 1
+    assert novo_carrinho[0]["produto"] == "teclado"
+
+
+
+
+
