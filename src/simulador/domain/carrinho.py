@@ -47,10 +47,46 @@ def adicionar_item(carrinho, estoque, indice, quantidade):
 
 
 def remover_item(carrinho, indice):
+
     item = item_existe_no_carrinho(carrinho, indice)
     if item: 
-        item_removido = carrinho.pop(indice)
-        return item_removido, None, carrinho
+        carrinho.remove(item)
+        return item, None, carrinho
     return None, "erro, item inexistente.", carrinho
+
+
+def calcular_total(carrinho):
+
+    total = 0
+
+    for item in carrinho:
+        total += item["preco"] * item["qtd"]
+    
+    return total
+
+
+def calcular_desconto(total, desconto):
+
+    total_de_desconto = total * (desconto / 100)
+    total_com_desconto = total - total_de_desconto
+    return total_com_desconto
+
+
+def aplica_taxa(total, taxa):
+
+    total_com_taxa = total + taxa
+    return total_com_taxa
+
+
+def total_final(carrinho, desconto, taxa):
+
+    total_bruto = calcular_total(carrinho)
+    total_com_desconto = calcular_desconto(total_bruto, desconto)
+    total_final = total_com_desconto + taxa
+    return total_final
+    
+
+
+
 
 
