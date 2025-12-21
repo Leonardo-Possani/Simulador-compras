@@ -1,3 +1,6 @@
+# Buscar
+
+
 def item_existe_no_carrinho(carrinho, indice):
     for item in carrinho:
         if item["indice"] == indice:
@@ -5,36 +8,50 @@ def item_existe_no_carrinho(carrinho, indice):
     return None
 
 
+# Validações
+
+
 def valida_indice_no_estoque(estoque, indice):
     if not 0 <= indice < len(estoque):
-        return "erro"
-    return None
+        return True
+    return False
 
 
 def valida_qtd_atual_carrinho_menor_estoque(qtd_existente_carrinho, quantidade, qtd_estoque):
     if qtd_existente_carrinho + quantidade > qtd_estoque:
-        return "erro"
-    return None
+        return True
+    return False
+
+
+# Mutações do carrinho
+
+def remover_item(carrinho, indice):
+
+    item = item_existe_no_carrinho(carrinho, indice)
+    if item: 
+        carrinho.remove(item)
+        return item, None, carrinho
+    return None, "indice inexistente.", carrinho
 
 
 def adicionar_item(carrinho, estoque, indice, quantidade):
         
     estoque_validado = valida_indice_no_estoque(estoque, indice)
-    if estoque_validado == "erro":
-        return None, "Erro indice inexistente.", carrinho
+    if estoque_validado:
+        return None, "indice inexistente.", carrinho
 
     qtd_estoque = estoque[indice]["estoque"]
 
     if quantidade <= 0:
-        return None, "erro de quantidade", carrinho
+        return None, "quantidade indisponível", carrinho
 
     item = item_existe_no_carrinho(carrinho, indice)
 
     if item:
         qtd_existente_carrinho = item["qtd"]
         qtd_atual_carrinho_validado = valida_qtd_atual_carrinho_menor_estoque(qtd_existente_carrinho, quantidade, qtd_estoque)
-        if qtd_atual_carrinho_validado == "erro":
-            return None, "Erro quantidade indisponível no estoque.", carrinho
+        if qtd_atual_carrinho_validado:
+            return None, "quantidade indisponível", carrinho
             
         item["qtd"] += quantidade
         return item, None, carrinho
@@ -46,13 +63,7 @@ def adicionar_item(carrinho, estoque, indice, quantidade):
     return item, None, carrinho
 
 
-def remover_item(carrinho, indice):
-
-    item = item_existe_no_carrinho(carrinho, indice)
-    if item: 
-        carrinho.remove(item)
-        return item, None, carrinho
-    return None, "erro, item inexistente.", carrinho
+# Cálculos financeiros
 
 
 def calcular_total(carrinho):
@@ -76,6 +87,8 @@ def aplica_taxa(total, taxa):
 
     total_com_taxa = total + taxa
     return total_com_taxa
+
+# Orquestração
 
 
 def total_final(carrinho, desconto, taxa):
