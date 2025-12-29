@@ -28,3 +28,26 @@ def aplicar_taxa_venda(venda, taxa):
     nova_venda_com_taxa["total_final"] = total_com_taxa
     return nova_venda_com_taxa, None
 
+
+def registrar_pagamento(venda, pagamento):
+
+    venda_paga = venda.copy()
+    venda_paga["pagamento"] = pagamento
+    return venda_paga, None
+
+
+def pagar_em_dinheiro(venda, valor_pago):
+
+    nova_venda_com_troco = venda.copy()
+    tipo_de_venda = nova_venda_com_troco["pagamento"]
+    total_final = nova_venda_com_troco["total_final"]
+
+    if tipo_de_venda == "dinheiro" and total_final <= valor_pago:
+        nova_venda_com_troco["troco"] = valor_pago - total_final
+        return nova_venda_com_troco, None
+    
+    if total_final > valor_pago:
+        return None, "dinheiro insuficiente"
+    
+
+
