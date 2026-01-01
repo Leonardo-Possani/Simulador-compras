@@ -133,3 +133,66 @@ def test_pagamento_em_dinheiro_menor_que_total_final():
     assert venda_com_erro is None
     assert erro is not None
 
+
+def test_dinheiro_exato():
+
+    carrinho = [
+        {"produto": "mouse", "preco": 20.0, "qtd": 3, "indice": 0},
+        {"produto": "teclado", "preco": 50.0, "qtd": 1, "indice": 1},
+    ]
+
+    venda = {
+            "itens": carrinho, 
+            "total": 110,
+            "total_com_desconto": 99,
+            "total_final": 114,
+            "pagamento": "dinheiro"
+            }
+    
+    venda_paga, erro = vd.pagar_em_dinheiro(venda, valor_pago=114)
+
+    assert erro is None
+    assert "troco" not in venda_paga
+
+
+def test_pagamento_debito():
+
+    carrinho = [
+        {"produto": "mouse", "preco": 20.0, "qtd": 3, "indice": 0},
+        {"produto": "teclado", "preco": 50.0, "qtd": 1, "indice": 1},
+    ]
+
+    venda = {
+            "itens": carrinho, 
+            "total": 110,
+            "total_com_desconto": 99,
+            "total_final": 114,
+            "pagamento": "debito"
+            }
+
+    venda_debito, erro = vd.venda_paga_no_debito(venda, valor_pago=114)
+
+    assert erro is None
+    assert venda_debito["total_final"] == venda_debito["valor_pago"]
+
+
+def test_pagamento_debito_valor_pago_incorreto():
+
+    carrinho = [
+        {"produto": "mouse", "preco": 20.0, "qtd": 3, "indice": 0},
+        {"produto": "teclado", "preco": 50.0, "qtd": 1, "indice": 1},
+    ]
+
+    venda = {
+            "itens": carrinho, 
+            "total": 110,
+            "total_com_desconto": 99,
+            "total_final": 114,
+            "pagamento": "debito"
+            }
+    
+    venda_debito_com_erro, erro = vd.venda_paga_no_debito(venda, valor_pago=110)
+    
+    assert erro is not None
+    assert venda_debito_com_erro is None
+

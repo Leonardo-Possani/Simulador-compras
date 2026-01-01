@@ -2,16 +2,16 @@ from simulador.domain import carrinho as carr
 
 
 def fechar_venda(carrinho):
-    
+
     if not carrinho:
-        return None, "carrinho vazio" 
+        return None, "carrinho vazio"
     else:
         total = carr.calcular_total(carrinho)
         return {"itens": carrinho, "total": total}, None
 
 
 def aplicar_desconto(venda, desconto):
-    
+
     nova_venda_com_desconto = venda.copy()
 
     total_bruto = nova_venda_com_desconto["total"]
@@ -43,11 +43,28 @@ def pagar_em_dinheiro(venda, valor_pago):
     total_final = nova_venda_com_troco["total_final"]
 
     if tipo_de_venda == "dinheiro" and total_final <= valor_pago:
+        if total_final == valor_pago:
+            return nova_venda_com_troco, None
+
         nova_venda_com_troco["troco"] = valor_pago - total_final
         return nova_venda_com_troco, None
-    
+
     if total_final > valor_pago:
         return None, "dinheiro insuficiente"
-    
+
+
+def venda_paga_no_debito(venda, valor_pago):
+
+    venda_debito = venda.copy()
+    if venda_debito["pagamento"] == "debito":
+
+        if venda_debito["total_final"] == valor_pago:
+            venda_debito["valor_pago"] = valor_pago
+            return venda_debito, None
+        
+        if valor_pago != venda_debito["total_final"]:
+            return None, "valor incorreto"
+
+
 
 
