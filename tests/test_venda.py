@@ -17,27 +17,27 @@ def test_fechar_venda_com_carrinho_valido():
         {"produto": "mouse", "preco": 20.0, "qtd": 3, "indice": 0},
         {"produto": "teclado", "preco": 50.0, "qtd": 1, "indice": 1},
     ]
-    
+
     venda, erro = vd.fechar_venda(carrinho)
 
     assert venda is not None
     assert erro is None
     assert venda["itens"] == carrinho
-    
+
 
 def test_venda_calcula_total():
-    
+
     carrinho = [
         {"produto": "mouse", "preco": 20.0, "qtd": 3, "indice": 0},
         {"produto": "teclado", "preco": 50.0, "qtd": 1, "indice": 1},
     ]
 
     venda, erro = vd.fechar_venda(carrinho)
-    
+
     assert erro is None
     assert venda["total"] == 110
 
- 
+
 def test_venda_com_desconto():
 
     carrinho = [
@@ -60,11 +60,7 @@ def test_aplicar_taxa_na_venda():
         {"produto": "teclado", "preco": 50.0, "qtd": 1, "indice": 1},
     ]
 
-    venda = {
-            "itens": carrinho, 
-            "total": 110,
-            "total_com_desconto": 99
-            }
+    venda = {"itens": carrinho, "total": 110, "total_com_desconto": 99}
 
     nova_venda_com_taxa, erro = vd.aplicar_taxa_venda(venda, 15)
 
@@ -79,12 +75,7 @@ def test_registrar_pagamento_venda():
         {"produto": "teclado", "preco": 50.0, "qtd": 1, "indice": 1},
     ]
 
-    venda = {
-            "itens": carrinho, 
-            "total": 110,
-            "total_com_desconto": 99,
-            "total_final": 114
-            }
+    venda = {"itens": carrinho, "total": 110, "total_com_desconto": 99, "total_final": 114}
 
     venda_paga, erro = vd.registrar_pagamento(venda, "credito")
 
@@ -93,21 +84,21 @@ def test_registrar_pagamento_venda():
 
 
 def test_pagamento_em_dinheiro_calcula_troca():
-    
+
     carrinho = [
         {"produto": "mouse", "preco": 20.0, "qtd": 3, "indice": 0},
         {"produto": "teclado", "preco": 50.0, "qtd": 1, "indice": 1},
     ]
 
     venda = {
-            "itens": carrinho, 
-            "total": 110,
-            "total_com_desconto": 99,
-            "total_final": 114,
-            "pagamento": "dinheiro"
-            }
+        "itens": carrinho,
+        "total": 110,
+        "total_com_desconto": 99,
+        "total_final": 114,
+        "pagamento": "dinheiro",
+    }
 
-    venda_com_troco, erro = vd.pagar_em_dinheiro(venda, valor_pago=120)
+    venda_com_troco, erro = vd.venda_paga_no_dinheiro(venda, valor_pago=120)
 
     assert venda_com_troco["troco"] == 6
     assert erro is None
@@ -121,14 +112,14 @@ def test_pagamento_em_dinheiro_menor_que_total_final():
     ]
 
     venda = {
-            "itens": carrinho, 
-            "total": 110,
-            "total_com_desconto": 99,
-            "total_final": 114,
-            "pagamento": "dinheiro"
-            }
+        "itens": carrinho,
+        "total": 110,
+        "total_com_desconto": 99,
+        "total_final": 114,
+        "pagamento": "dinheiro",
+    }
 
-    venda_com_erro, erro = vd.pagar_em_dinheiro(venda, valor_pago=100)
+    venda_com_erro, erro = vd.venda_paga_no_dinheiro(venda, valor_pago=100)
 
     assert venda_com_erro is None
     assert erro is not None
@@ -142,14 +133,14 @@ def test_dinheiro_exato():
     ]
 
     venda = {
-            "itens": carrinho, 
-            "total": 110,
-            "total_com_desconto": 99,
-            "total_final": 114,
-            "pagamento": "dinheiro"
-            }
-    
-    venda_paga, erro = vd.pagar_em_dinheiro(venda, valor_pago=114)
+        "itens": carrinho,
+        "total": 110,
+        "total_com_desconto": 99,
+        "total_final": 114,
+        "pagamento": "dinheiro",
+    }
+
+    venda_paga, erro = vd.venda_paga_no_dinheiro(venda, valor_pago=114)
 
     assert erro is None
     assert "troco" not in venda_paga
@@ -163,12 +154,12 @@ def test_pagamento_debito():
     ]
 
     venda = {
-            "itens": carrinho, 
-            "total": 110,
-            "total_com_desconto": 99,
-            "total_final": 114,
-            "pagamento": "debito"
-            }
+        "itens": carrinho,
+        "total": 110,
+        "total_com_desconto": 99,
+        "total_final": 114,
+        "pagamento": "debito",
+    }
 
     venda_debito, erro = vd.venda_paga_no_debito(venda, valor_pago=114)
 
@@ -184,15 +175,77 @@ def test_pagamento_debito_valor_pago_incorreto():
     ]
 
     venda = {
-            "itens": carrinho, 
-            "total": 110,
-            "total_com_desconto": 99,
-            "total_final": 114,
-            "pagamento": "debito"
-            }
-    
+        "itens": carrinho,
+        "total": 110,
+        "total_com_desconto": 99,
+        "total_final": 114,
+        "pagamento": "debito",
+    }
+
     venda_debito_com_erro, erro = vd.venda_paga_no_debito(venda, valor_pago=110)
-    
+
     assert erro is not None
     assert venda_debito_com_erro is None
 
+
+def test_pagamento_em_cretido_a_vista():
+
+    carrinho = [
+        {"produto": "mouse", "preco": 20.0, "qtd": 3, "indice": 0},
+        {"produto": "teclado", "preco": 50.0, "qtd": 1, "indice": 1},
+    ]
+
+    venda = {
+        "itens": carrinho,
+        "total": 110,
+        "total_com_desconto": 99,
+        "total_final": 114,
+        "pagamento": "credito",
+    }
+
+    venda_credito, erro = vd.venda_paga_no_credito(venda, valor_pago=114)
+
+    assert erro is None
+    assert venda_credito["total_final"] == venda_credito["valor_pago"]
+
+
+def test_credito_com_valor_incorreto():
+
+    carrinho = [
+        {"produto": "mouse", "preco": 20.0, "qtd": 3, "indice": 0},
+        {"produto": "teclado", "preco": 50.0, "qtd": 1, "indice": 1},
+    ]
+
+    venda = {
+        "itens": carrinho,
+        "total": 110,
+        "total_com_desconto": 99,
+        "total_final": 114,
+        "pagamento": "credito",
+    }
+
+    venda_com_erro, erro = vd.venda_paga_no_credito(venda, valor_pago=100)
+
+    assert erro is not None
+    assert venda_com_erro is None
+
+
+def test_processar_pagamento():
+
+    carrinho = [
+        {"produto": "mouse", "preco": 20.0, "qtd": 3, "indice": 0},
+        {"produto": "teclado", "preco": 50.0, "qtd": 1, "indice": 1},
+    ]
+
+    venda = {
+        "itens": carrinho,
+        "total": 110,
+        "total_com_desconto": 99,
+        "total_final": 114,
+        "pagamento": "credito",
+    }
+
+    venda_processada, erro = vd.processar_pagamento(venda, valor_pago=114)
+
+    assert erro is None
+    assert venda_processada["total_final"] == venda_processada["valor_pago"]

@@ -36,7 +36,7 @@ def registrar_pagamento(venda, pagamento):
     return venda_paga, None
 
 
-def pagar_em_dinheiro(venda, valor_pago):
+def venda_paga_no_dinheiro(venda, valor_pago):
 
     nova_venda_com_troco = venda.copy()
     tipo_de_venda = nova_venda_com_troco["pagamento"]
@@ -57,14 +57,40 @@ def venda_paga_no_debito(venda, valor_pago):
 
     venda_debito = venda.copy()
     if venda_debito["pagamento"] == "debito":
-
         if venda_debito["total_final"] == valor_pago:
             venda_debito["valor_pago"] = valor_pago
             return venda_debito, None
-        
+
         if valor_pago != venda_debito["total_final"]:
             return None, "valor incorreto"
 
 
+def venda_paga_no_credito(venda, valor_pago):
+
+    venda_credito = venda.copy()
+    if venda_credito["pagamento"] == "credito":
+        if venda_credito["total_final"] == valor_pago:
+            venda_credito["valor_pago"] = valor_pago
+            return venda_credito, None
+
+        if valor_pago != venda_credito["total_final"]:
+            return None, "valor incorreto"
 
 
+def processar_pagamento(venda, valor_pago):
+
+    venda_a_processar = venda.copy()
+    if venda_a_processar["pagamento"] == "dinheiro":
+        venda_processada, erro = venda_paga_no_dinheiro(venda_a_processar, valor_pago)
+        return venda_processada, erro
+
+    elif venda_a_processar["pagamento"] == "debito":
+        venda_processada, erro = venda_paga_no_debito(venda_a_processar, valor_pago)
+        return venda_processada, erro
+
+    elif venda_a_processar["pagamento"] == "credito":
+        venda_processada, erro = venda_paga_no_credito(venda_a_processar, valor_pago)
+        return venda_processada, erro
+
+    else:
+        return None, "metodo inválido"
