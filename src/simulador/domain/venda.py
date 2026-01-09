@@ -94,3 +94,15 @@ def processar_pagamento(venda, valor_pago):
 
     else:
         return None, "metodo inválido"
+
+
+def extrair_itens_vendidos(venda):
+
+    itens_vendidos = []
+    carrinho = venda["itens"]
+
+    for itens in carrinho:
+        item = {"indice": itens["indice"], "qtd": itens["qtd"]}
+        itens_vendidos.append(item)
+    
+    return itens_vendidos, None

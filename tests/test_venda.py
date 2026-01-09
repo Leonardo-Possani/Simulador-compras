@@ -249,3 +249,32 @@ def test_processar_pagamento():
 
     assert erro is None
     assert venda_processada["total_final"] == venda_processada["valor_pago"]
+
+
+def test_extrair_itens_vendidos():
+
+    carrinho = [
+            {"produto": "mouse", "preco": 20.0, "qtd": 3, "indice": 0},
+            {"produto": "teclado", "preco": 50.0, "qtd": 1, "indice": 1},
+        ]
+
+    venda = {
+        "itens": carrinho,
+        "total": 110,
+        "total_com_desconto": 99,
+        "total_final": 114,
+        "pagamento": "credito",
+        "valor_pago": 114
+    }
+
+    itens_vendidos, erro = vd.extrair_itens_vendidos(venda)
+
+    assert erro is None
+    assert len(itens_vendidos) == 2
+    assert itens_vendidos[0]["indice"] == 0
+    assert itens_vendidos[1]["indice"] == 1
+    assert itens_vendidos[0]["qtd"] == 3
+    assert itens_vendidos[1]["qtd"] == 1
+
+
+
