@@ -1,6 +1,17 @@
+def valida_estoque_para_venda(itens_vendidos, estoque):
+
+    for item in itens_vendidos:
+
+        indice = item["indice"]
+        qtd = item["qtd"]
+
+        if estoque[indice]["estoque"] < qtd:
+            return False, "estoque insuficiente"
+
+    return True, None
 
 
-def venda_concluida_baixar_estoque(itens_vendidos, estoque):
+def venda_concluindo_baixar_estoque(itens_vendidos, estoque):
 
     estoque_atualizado = estoque.copy()
     
