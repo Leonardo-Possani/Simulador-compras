@@ -5,27 +5,30 @@ def test_adicionar_item_valido():
 
     estoque = [{"produto": "mouse", "preco": 20.0, "estoque": 10}]
     carrinho = []
-    item, erro, novo_carrinho = carr.adicionar_item(carrinho, estoque, 0, 3)
+    resultado = carr.adicionar_item(carrinho, estoque, 0, 3)
 
-    assert item is not None
-    assert erro is None
-    assert item["produto"] == "mouse"
-    assert item["preco"] == 20.0
-    assert item["qtd"] == 3
-    assert item["indice"] == 0 
-    assert novo_carrinho == carrinho
+    assert resultado["ok"] is True
+    assert resultado["data"]["item"] is not None
+    assert resultado["error"] is None
+    assert resultado["data"]["item"]["produto"] == "mouse"
+    assert resultado["data"]["item"]["preco"] == 20.0
+    assert resultado["data"]["item"]["qtd"] == 3
+    assert resultado["data"]["item"]["indice"] == 0
+    assert resultado["data"]["carrinho"][0]["produto"] == "mouse"
+    assert len(carrinho) == 1
 
 
 def test_adicionar_mesmo_item_soma_quantidade():
-    
+
     estoque = [{"produto": "mouse", "preco": 20.0, "estoque": 10}]
     carrinho = [{"produto": "mouse", "preco": 20.0, "qtd": 3, "indice": 0}]
 
-    item, erro, novo_carrinho = carr.adicionar_item(carrinho, estoque, 0, 2)
+    resultado = carr.adicionar_item(carrinho, estoque, 0, 2)
 
-    assert erro is None
-    assert item["qtd"] == 5
-    assert len(novo_carrinho) == 1
+    assert resultado["ok"] is True
+    assert resultado["error"] is None
+    assert resultado["data"]["item"]["qtd"] == 5
+    assert len(resultado["data"]["carrinho"]) == 1
 
 
 def test_nao_permite_quantidade_menor_ou_igual_zero():
@@ -33,11 +36,12 @@ def test_nao_permite_quantidade_menor_ou_igual_zero():
     estoque = [{"produto": "mouse", "preco": 20.0, "estoque": 10}]
     carrinho = []
 
-    item, erro, novo_carrinho = carr.adicionar_item(carrinho, estoque, 0, 0)
+    resultado = carr.adicionar_item(carrinho, estoque, 0, 0)
 
-    assert item is None
-    assert erro is not None
-    assert novo_carrinho == carrinho
+    assert resultado["ok"] is False
+    assert resultado["data"] is None
+    assert resultado["error"] == "quantidade indisponível"
+    assert len(carrinho) == 0
 
 
 def test_nao_permite_quantidade_maior_que_estoque():
@@ -45,23 +49,25 @@ def test_nao_permite_quantidade_maior_que_estoque():
     estoque = [{"produto": "mouse", "preco": 20.0, "estoque": 5}]
     carrinho = [{"produto": "mouse", "preco": 20.0, "qtd": 3, "indice": 0}]
 
-    item, erro, novo_carrinho = carr.adicionar_item(carrinho, estoque, 0, 3)
+    resultado = carr.adicionar_item(carrinho, estoque, 0, 3)
 
-    assert item is None
-    assert erro is not None
-    assert novo_carrinho == carrinho
-    
+    assert resultado["ok"] is False
+    assert resultado["data"] is None
+    assert carrinho == carrinho
+    assert resultado["error"] == "quantidade indisponível"
+
 
 def test_nao_permite_indice_invalido():
-    
+
     estoque = [{"produto": "mouse", "preco": 20.0, "estoque": 10}]
     carrinho = []
-    
-    item, erro, novo_carrinho = carr.adicionar_item(carrinho, estoque, -1, 1)
 
-    assert item is None
-    assert erro is not None
-    assert novo_carrinho == carrinho 
+    resultado = carr.adicionar_item(carrinho, estoque, -1, 1)
+
+    assert resultado["ok"] is False
+    assert resultado["data"] is None
+    assert resultado["error"] == "indice inexistente"
+    assert carrinho == carrinho
 
 
 def test_remove_item_do_carrinho():
@@ -70,12 +76,12 @@ def test_remove_item_do_carrinho():
         {"produto": "teclado", "preco": 50.0, "qtd": 1, "indice": 1},
     ]
 
-    item, erro, novo_carrinho = carr.remover_item(carrinho, 0)
+    resultado = carr.remover_item(carrinho, 0)
 
-    assert erro is None
-    assert item["produto"] == "mouse"
-    assert len(novo_carrinho) == 1
-    assert novo_carrinho[0]["produto"] == "teclado"
+    assert resultado["ok"] is True
+    assert resultado["data"]["item"]["produto"] == "mouse"
+    assert len(carrinho) == 1
+    assert carrinho[0]["produto"] == "teclado"
 
 
 def test_nao_remove_item_inexistente_do_carrinho():
@@ -85,26 +91,27 @@ def test_nao_remove_item_inexistente_do_carrinho():
         {"produto": "teclado", "preco": 50.0, "qtd": 1, "indice": 1},
     ]
 
-    item, erro, novo_carrinho = carr.remover_item(carrinho, 2)
+    resultado = carr.remover_item(carrinho, 2)
 
-    assert item is None
-    assert erro is not None
-    assert novo_carrinho == carrinho
+    assert resultado["ok"] is False
+    assert resultado["data"] is None
+    assert carrinho == carrinho
+    assert resultado["error"] == "indice inexistente"
 
 
-def test_temove_item_com_ordem_diferente_do_indice():
+def test_remove_item_com_ordem_diferente_do_indice():
 
     carrinho = [
         {"produto": "teclado", "preco": 50.0, "qtd": 1, "indice": 1},
         {"produto": "mouse", "preco": 20.0, "qtd": 3, "indice": 0},
     ]
-    
-    item, erro, novo_carrinho = carr.remover_item(carrinho, 0)
 
-    assert erro is None
-    assert item["produto"] == "mouse"
-    assert len(novo_carrinho) == 1
-    assert novo_carrinho[0]["produto"] == "teclado"
+    resultado = carr.remover_item(carrinho, 0)
+
+    assert resultado["ok"] is True
+    assert resultado["data"]["item"]["produto"] == "mouse"
+    assert len(carrinho) == 1
+    assert carrinho[0]["produto"] == "teclado"
 
 
 def test_calcular_total_bruto_do_carrinho():
@@ -115,12 +122,12 @@ def test_calcular_total_bruto_do_carrinho():
     ]
 
     total = carr.calcular_total(carrinho)
-    
+
     assert total == 90.0
 
 
 def test_calcular_carrinho_vazio():
-    
+
     carrinho = []
 
     total = carr.calcular_total(carrinho)
@@ -169,7 +176,7 @@ def test_total_final_menos_descontos_mais_taxas():
 
 
 def test_validar_total_sem_descomtos_sem_taxa():
-    
+
     carrinho = [
         {"produto": "mouse", "preco": 20.0, "qtd": 3, "indice": 0},
         {"produto": "teclado", "preco": 50.0, "qtd": 1, "indice": 1},
@@ -178,7 +185,3 @@ def test_validar_total_sem_descomtos_sem_taxa():
     total_final = carr.total_final(carrinho, 0, 0)
 
     assert total_final == 110
-
-    
-
-

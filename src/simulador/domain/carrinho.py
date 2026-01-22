@@ -13,54 +13,58 @@ def item_existe_no_carrinho(carrinho, indice):
 
 def valida_indice_no_estoque(estoque, indice):
     if not 0 <= indice < len(estoque):
-        return True
-    return False
+        return False
+    return True
 
 
 def valida_qtd_atual_carrinho_menor_estoque(qtd_existente_carrinho, quantidade, qtd_estoque):
     if qtd_existente_carrinho + quantidade > qtd_estoque:
-        return True
-    return False
+        return False
+    return True
 
 
 # Mutações do carrinho
 
+
 def remover_item(carrinho, indice):
 
     item = item_existe_no_carrinho(carrinho, indice)
-    if item: 
+    if item:
         carrinho.remove(item)
-        return item, None, carrinho
-    return None, "indice inexistente.", carrinho
+        return {"ok": True, "data": {"item": item}, "error": None}
+    return {"ok": False, "data": None, "error": "indice inexistente"}
 
 
 def adicionar_item(carrinho, estoque, indice, quantidade):
-        
+
     estoque_validado = valida_indice_no_estoque(estoque, indice)
-    if estoque_validado:
-        return None, "indice inexistente.", carrinho
+    if not estoque_validado:
+        return {"ok": False, "data": None, "error": "indice inexistente"}
 
     qtd_estoque = estoque[indice]["estoque"]
 
     if quantidade <= 0:
-        return None, "quantidade indisponível", carrinho
+        return {"ok": False, "data": None, "error": "quantidade indisponível"}
 
     item = item_existe_no_carrinho(carrinho, indice)
 
     if item:
         qtd_existente_carrinho = item["qtd"]
-        qtd_atual_carrinho_validado = valida_qtd_atual_carrinho_menor_estoque(qtd_existente_carrinho, quantidade, qtd_estoque)
-        if qtd_atual_carrinho_validado:
-            return None, "quantidade indisponível", carrinho
-            
+        qtd_atual_carrinho_validado = valida_qtd_atual_carrinho_menor_estoque(
+            qtd_existente_carrinho, quantidade, qtd_estoque
+        )
+        if not qtd_atual_carrinho_validado:
+            return {"ok": False, "data": None, "error": "quantidade indisponível"}
+
         item["qtd"] += quantidade
-        return item, None, carrinho
+        return {"ok": True, "data": {"item": item, "carrinho": carrinho}, "error": None}
 
     produto = estoque[indice]
     nome = produto["produto"]
     preco = produto["preco"]
     item = {"produto": nome, "preco": preco, "qtd": quantidade, "indice": indice}
-    return item, None, carrinho
+    carrinho.append(item)
+    return {"ok": True, "data": {"item": item, "carrinho": carrinho}, "error": None}
 
 
 # Cálculos financeiros
@@ -72,7 +76,7 @@ def calcular_total(carrinho):
 
     for item in carrinho:
         total += item["preco"] * item["qtd"]
-    
+
     return total
 
 
@@ -88,6 +92,7 @@ def aplica_taxa(total, taxa):
     total_com_taxa = total + taxa
     return total_com_taxa
 
+
 # Orquestração
 
 
@@ -97,9 +102,3 @@ def total_final(carrinho, desconto, taxa):
     total_com_desconto = calcular_desconto(total_bruto, desconto)
     total_final = total_com_desconto + taxa
     return total_final
-    
-
-
-
-
-
