@@ -121,46 +121,58 @@ def test_calcular_total_bruto_do_carrinho():
         {"produto": "teclado", "preco": 50.0, "qtd": 1, "indice": 1},
     ]
 
-    total = carr.calcular_total(carrinho)
+    resultado = carr.calcular_total(carrinho)
 
-    assert total == 90.0
+    assert resultado["ok"] is True
+    assert resultado["data"]["total"] == 90.0
+    assert resultado["error"] is None
 
 
 def test_calcular_carrinho_vazio():
 
     carrinho = []
 
-    total = carr.calcular_total(carrinho)
+    resultado = carr.calcular_total(carrinho)
 
-    assert total == 0
+    assert resultado["ok"] is True
+    assert resultado["data"]["total"] == 0
+    assert resultado["error"] is None
 
 
 def test_aplicar_desconto_no_carrinho():
 
-    total_com_desconto = carr.calcular_desconto(100, 17)
+    resultado = carr.calcular_desconto(100, 17)
 
-    assert total_com_desconto == 83.0
+    assert resultado["ok"] is True
+    assert resultado["data"]["total_com_desconto"] == 83.0
+    assert resultado["error"] is None
 
 
 def test_tratar_desconto_zero():
 
-    total_com_desconto = carr.calcular_desconto(100, 0)
+    resultado = carr.calcular_desconto(100, 0)
 
-    assert total_com_desconto == 100
+    assert resultado["ok"] is True
+    assert resultado["data"]["total_com_desconto"] == 100
+    assert resultado["error"] is None
 
 
 def test_aplica_taxa_no_valor_final():
 
-    total_com_taxa = carr.aplica_taxa(100, 35)
+    resultado = carr.aplica_taxa(100, 35)
 
-    assert total_com_taxa == 135
+    assert resultado["ok"] is True
+    assert resultado["data"]["total_com_taxa"] == 135
+    assert resultado["error"] is None
 
 
 def test_taxa_zero_nao_deve_alterar_total():
 
-    total_com_taxa = carr.aplica_taxa(100, 0)
+    resultado = carr.aplica_taxa(100, 0)
 
-    assert total_com_taxa == 100
+    assert resultado["ok"] is True
+    assert resultado["data"]["total_com_taxa"] == 100
+    assert resultado["error"] is None
 
 
 def test_total_final_menos_descontos_mais_taxas():
@@ -170,9 +182,11 @@ def test_total_final_menos_descontos_mais_taxas():
         {"produto": "teclado", "preco": 50.0, "qtd": 1, "indice": 1},
     ]
 
-    total_final = carr.total_final(carrinho, 5, 8)
+    resultado = carr.total_final(carrinho, 5, 8)
 
-    assert total_final == 93.5
+    assert resultado["ok"] is True
+    assert resultado["data"]["total_final"] == 93.5
+    assert resultado["error"] is None
 
 
 def test_validar_total_sem_descomtos_sem_taxa():
@@ -182,6 +196,8 @@ def test_validar_total_sem_descomtos_sem_taxa():
         {"produto": "teclado", "preco": 50.0, "qtd": 1, "indice": 1},
     ]
 
-    total_final = carr.total_final(carrinho, 0, 0)
+    resultado = carr.total_final(carrinho, 0, 0)
 
-    assert total_final == 110
+    assert resultado["ok"] is True
+    assert resultado["data"]["total_final"] == 110
+    assert resultado["error"] is None

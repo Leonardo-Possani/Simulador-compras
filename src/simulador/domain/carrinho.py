@@ -77,20 +77,20 @@ def calcular_total(carrinho):
     for item in carrinho:
         total += item["preco"] * item["qtd"]
 
-    return total
+    return {"ok": True, "data": {"total": total}, "error": None}
 
 
 def calcular_desconto(total, desconto):
 
     total_de_desconto = total * (desconto / 100)
     total_com_desconto = total - total_de_desconto
-    return total_com_desconto
+    return {"ok": True, "data": {"total_com_desconto": total_com_desconto}, "error": None}
 
 
 def aplica_taxa(total, taxa):
 
     total_com_taxa = total + taxa
-    return total_com_taxa
+    return {"ok": True, "data": {"total_com_taxa": total_com_taxa}, "error": None}
 
 
 # Orquestração
@@ -98,7 +98,9 @@ def aplica_taxa(total, taxa):
 
 def total_final(carrinho, desconto, taxa):
 
-    total_bruto = calcular_total(carrinho)
-    total_com_desconto = calcular_desconto(total_bruto, desconto)
+    resultado = calcular_total(carrinho)
+    total_bruto = resultado["data"]["total"]
+    resultado = calcular_desconto(total_bruto, desconto)
+    total_com_desconto = resultado["data"]["total_com_desconto"]
     total_final = total_com_desconto + taxa
-    return total_final
+    return {"ok": True, "data": {"total_final": total_final}, "error": None}
