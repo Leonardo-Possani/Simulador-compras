@@ -4,11 +4,12 @@ from simulador.domain import carrinho as carr
 def fechar_venda(carrinho):
 
     if not carrinho:
-        return None, "carrinho vazio"
+        return {"ok": False, "data": None, "error": "carrinho vazio"}
     else:
         resultado = carr.calcular_total(carrinho)
         total = resultado["data"]["total"]
-        return {"itens": carrinho, "total": total}, None
+        return {"ok": True, "data": {"venda": {"itens": carrinho, "total": total}}, "error": None} 
+    # {"itens": carrinho, "total": total}, None
 
 
 def aplicar_desconto(venda, desconto):
@@ -19,7 +20,7 @@ def aplicar_desconto(venda, desconto):
     resultado = carr.calcular_desconto(total_bruto, desconto)
     total_venda_com_desconto = resultado["data"]["total_com_desconto"]
     nova_venda_com_desconto["total_com_desconto"] = total_venda_com_desconto
-    return nova_venda_com_desconto, None
+    return {"ok": True, "data": {"venda": nova_venda_com_desconto}, "error": None}
 
 
 def aplicar_taxa_venda(venda, taxa):
@@ -29,14 +30,14 @@ def aplicar_taxa_venda(venda, taxa):
     resultado = carr.aplica_taxa(total, taxa)
     total_com_taxa = resultado["data"]["total_com_taxa"]
     nova_venda_com_taxa["total_final"] = total_com_taxa
-    return nova_venda_com_taxa, None
+    return {"ok": True, "data": {"venda": nova_venda_com_taxa}, "error": None}
 
 
 def registrar_pagamento(venda, pagamento):
 
     venda_paga = venda.copy()
     venda_paga["pagamento"] = pagamento
-    return venda_paga, None
+    return {"ok": True, "data": {"venda": venda_paga}, "error": None}
 
 
 def venda_paga_no_dinheiro(venda, valor_pago):
@@ -47,13 +48,13 @@ def venda_paga_no_dinheiro(venda, valor_pago):
 
     if tipo_de_venda == "dinheiro" and total_final <= valor_pago:
         if total_final == valor_pago:
-            return nova_venda_com_troco, None
+            return {"ok": True, "data": {"venda": nova_venda_com_troco}, "error": None}
 
         nova_venda_com_troco["troco"] = valor_pago - total_final
-        return nova_venda_com_troco, None
+        return {"ok": True, "data": {"venda": nova_venda_com_troco}, "error": None}
 
     if total_final > valor_pago:
-        return None, "dinheiro insuficiente"
+        return {"ok": False, "data": None, "error": "dinheiro insuficiente"}
 
 
 def venda_paga_no_debito(venda, valor_pago):
@@ -62,10 +63,10 @@ def venda_paga_no_debito(venda, valor_pago):
     if venda_debito["pagamento"] == "debito":
         if venda_debito["total_final"] == valor_pago:
             venda_debito["valor_pago"] = valor_pago
-            return venda_debito, None
+            return {"ok": True, "data": {"venda": venda_debito}, "error": None}
 
         if valor_pago != venda_debito["total_final"]:
-            return None, "valor incorreto"
+            return {"ok": False, "data": None, "error": "valor incorreto"}
 
 
 def venda_paga_no_credito(venda, valor_pago):
@@ -74,26 +75,26 @@ def venda_paga_no_credito(venda, valor_pago):
     if venda_credito["pagamento"] == "credito":
         if venda_credito["total_final"] == valor_pago:
             venda_credito["valor_pago"] = valor_pago
-            return venda_credito, None
+            return {"ok": True, "data": {"venda": venda_credito}, "error": None}
 
         if valor_pago != venda_credito["total_final"]:
-            return None, "valor incorreto"
+            return {"ok": False, "data": None, "error": "valor incorreto"}
 
 
 def processar_pagamento(venda, valor_pago):
 
     venda_a_processar = venda.copy()
     if venda_a_processar["pagamento"] == "dinheiro":
-        venda_processada, erro = venda_paga_no_dinheiro(venda_a_processar, valor_pago)
-        return venda_processada, erro
+        resultado = venda_paga_no_dinheiro(venda_a_processar, valor_pago)
+        return resultado
 
     elif venda_a_processar["pagamento"] == "debito":
-        venda_processada, erro = venda_paga_no_debito(venda_a_processar, valor_pago)
-        return venda_processada, erro
+        resultado = venda_paga_no_debito(venda_a_processar, valor_pago)
+        return resultado
 
     elif venda_a_processar["pagamento"] == "credito":
-        venda_processada, erro = venda_paga_no_credito(venda_a_processar, valor_pago)
-        return venda_processada, erro
+        resultado = venda_paga_no_credito(venda_a_processar, valor_pago)
+        return resultado
 
     else:
         return None, "metodo inválido"
@@ -108,4 +109,4 @@ def extrair_itens_vendidos(venda):
         item = {"indice": itens["indice"], "qtd": itens["qtd"]}
         itens_vendidos.append(item)
     
-    return itens_vendidos, None
+    return {"ok": True, "data": {"itens_vendidos": itens_vendidos}, "error": None}
