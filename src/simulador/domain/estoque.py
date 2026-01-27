@@ -6,9 +6,8 @@ def valida_estoque_para_venda(itens_vendidos, estoque):
         qtd = item["qtd"]
 
         if estoque[indice]["estoque"] < qtd:
-            return False, "estoque insuficiente"
-
-    return True, None
+            return {"ok": False, "data": None, "error": "estoque insuficiente"}
+    return {"ok": True, "data": True, "error": None}
 
 
 def venda_concluindo_baixar_estoque(itens_vendidos, estoque):
@@ -22,5 +21,5 @@ def venda_concluindo_baixar_estoque(itens_vendidos, estoque):
         
         estoque_atualizado[indice]["estoque"] -= qtd
 
-    return estoque_atualizado, None
+    return {"ok": True, "data": {"estoque_atualizado": estoque_atualizado}, "error": None}
 

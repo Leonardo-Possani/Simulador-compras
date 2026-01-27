@@ -51,6 +51,7 @@ def finalizar_venda(carrinho, estoque, desconto, taxa, pagamento, valor_pago):
                 }
 
     resultado = vd.extrair_itens_vendidos(resultado["data"]["venda"])
+    itens_vendidos = resultado["data"]["itens_vendidos"]
 
     if resultado["error"] is not None:
         return {
@@ -59,22 +60,23 @@ def finalizar_venda(carrinho, estoque, desconto, taxa, pagamento, valor_pago):
                     "error": resultado["error"]
                 }
 
-    estoque_para_venda_valido, erro = etq.valida_estoque_para_venda(resultado["data"]["itens_vendidos"], estoque)
+    resultado = etq.valida_estoque_para_venda(resultado["data"]["itens_vendidos"], estoque)
 
-    if not estoque_para_venda_valido:
+    if not resultado["ok"]:
         return {
                     "ok": False,
                     "data": None,
-                    "error": erro
+                    "error": resultado["error"]
                 }
 
-    estoque_atualizado, erro = etq.venda_concluindo_baixar_estoque(resultado["data"]["itens_vendidos"], estoque)
+    resultado = etq.venda_concluindo_baixar_estoque(itens_vendidos, estoque)
+    estoque_atualizado = resultado["data"]["estoque_atualizado"]
 
-    if erro is not None:
+    if resultado["error"] is not None:
         return {
                     "ok": False,
                     "data": None,
-                    "error": erro
+                    "error": resultado["error"]
                 }
 
     return {

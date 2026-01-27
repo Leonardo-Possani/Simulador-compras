@@ -97,7 +97,7 @@ def processar_pagamento(venda, valor_pago):
         return resultado
 
     else:
-        return None, "metodo inválido"
+        return {"ok": False, "data": None, "error": "metodo inválido"}
 
 
 def extrair_itens_vendidos(venda):

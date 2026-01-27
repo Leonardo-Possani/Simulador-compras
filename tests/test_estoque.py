@@ -13,12 +13,13 @@ def test_valida_estoque_para_venda():
         {"indice": 1, "qtd": 1},
     ]
 
-    validado, erro = etq.valida_estoque_para_venda(itens_vendidos, estoque)
+    resultado = etq.valida_estoque_para_venda(itens_vendidos, estoque)
 
-    assert erro is not None
-    assert validado is False
+    assert resultado["ok"] is False
+    assert resultado["data"] is None
+    assert resultado["error"] == "estoque insuficiente"
 
-
+   
 def test_venda_concluindo_baixar_estoque():
 
     estoque = [
@@ -31,14 +32,15 @@ def test_venda_concluindo_baixar_estoque():
         {"indice": 1, "qtd": 1},
     ]
 
-    estoque_atualizado, erro = etq.venda_concluindo_baixar_estoque(itens_vendidos, estoque)
+    resultado = etq.venda_concluindo_baixar_estoque(itens_vendidos, estoque)
 
-    assert erro is None
-    assert len(estoque_atualizado) == len(estoque)
-    assert estoque_atualizado[0]["estoque"] == 7
-    assert estoque_atualizado[1]["estoque"] == 9
-    assert estoque_atualizado[0]["produto"] == "mouse"
-    assert estoque_atualizado[1]["produto"] == "teclado"
+    assert resultado["ok"] is True
+    assert len(resultado["data"]["estoque_atualizado"]) == len(estoque)
+    assert resultado["data"]["estoque_atualizado"][0]["estoque"] == 7
+    assert resultado["data"]["estoque_atualizado"][1]["estoque"] == 9
+    assert resultado["data"]["estoque_atualizado"][0]["produto"] == "mouse"
+    assert resultado["data"]["estoque_atualizado"][1]["produto"] == "teclado"
+    assert resultado["error"] is None
 
 
-
+    
