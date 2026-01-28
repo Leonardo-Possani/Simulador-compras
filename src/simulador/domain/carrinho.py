@@ -1,11 +1,13 @@
+from simulador.domain.result import Result
+
 # Buscar
 
 
-def item_existe_no_carrinho(carrinho, indice):
+def item_existe_no_carrinho(carrinho: list[dict], indice: int) -> Result[dict]:
     for item in carrinho:
         if item["indice"] == indice:
-            return item
-    return None
+            return Result(ok=True, data=item)
+    return Result(ok=False)
 
 
 # Validações
@@ -28,8 +30,9 @@ def valida_qtd_atual_carrinho_menor_estoque(qtd_existente_carrinho, quantidade, 
 
 def remover_item(carrinho, indice):
 
-    item = item_existe_no_carrinho(carrinho, indice)
-    if item:
+    resultado = item_existe_no_carrinho(carrinho, indice)
+    item = resultado.data
+    if resultado.ok:
         carrinho.remove(item)
         return {"ok": True, "data": {"item": item}, "error": None}
     return {"ok": False, "data": None, "error": "indice inexistente"}
@@ -46,9 +49,10 @@ def adicionar_item(carrinho, estoque, indice, quantidade):
     if quantidade <= 0:
         return {"ok": False, "data": None, "error": "quantidade indisponível"}
 
-    item = item_existe_no_carrinho(carrinho, indice)
+    resultado = item_existe_no_carrinho(carrinho, indice)
+    item = resultado.data
 
-    if item:
+    if resultado.ok:
         qtd_existente_carrinho = item["qtd"]
         qtd_atual_carrinho_validado = valida_qtd_atual_carrinho_menor_estoque(
             qtd_existente_carrinho, quantidade, qtd_estoque

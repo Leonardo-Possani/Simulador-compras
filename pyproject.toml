@@ -51,6 +51,7 @@ pythonpath = [
 # ------------------------------
 
 [tool.ruff]
+fix = true
 line-length = 100
 src = ["src"]
 
