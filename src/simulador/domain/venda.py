@@ -7,7 +7,7 @@ def fechar_venda(carrinho):
         return {"ok": False, "data": None, "error": "carrinho vazio"}
     else:
         resultado = carr.calcular_total(carrinho)
-        total = resultado["data"]["total"]
+        total = resultado.data
         return {"ok": True, "data": {"venda": {"itens": carrinho, "total": total}}, "error": None} 
     # {"itens": carrinho, "total": total}, None
 
@@ -18,7 +18,7 @@ def aplicar_desconto(venda, desconto):
 
     total_bruto = nova_venda_com_desconto["total"]
     resultado = carr.calcular_desconto(total_bruto, desconto)
-    total_venda_com_desconto = resultado["data"]["total_com_desconto"]
+    total_venda_com_desconto = resultado.data
     nova_venda_com_desconto["total_com_desconto"] = total_venda_com_desconto
     return {"ok": True, "data": {"venda": nova_venda_com_desconto}, "error": None}
 
@@ -28,7 +28,7 @@ def aplicar_taxa_venda(venda, taxa):
     nova_venda_com_taxa = venda.copy()
     total = nova_venda_com_taxa["total_com_desconto"]
     resultado = carr.aplica_taxa(total, taxa)
-    total_com_taxa = resultado["data"]["total_com_taxa"]
+    total_com_taxa = resultado.data
     nova_venda_com_taxa["total_final"] = total_com_taxa
     return {"ok": True, "data": {"venda": nova_venda_com_taxa}, "error": None}
 
