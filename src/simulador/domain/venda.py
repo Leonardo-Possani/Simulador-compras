@@ -1,18 +1,18 @@
 from simulador.domain import carrinho as carr
+from simulador.domain.result import Result
 
 
-def fechar_venda(carrinho):
+def fechar_venda_com_carrinho_valido(carrinho: list[dict]) -> Result[dict]:
 
     if not carrinho:
-        return {"ok": False, "data": None, "error": "carrinho vazio"}
+        return Result(ok=False, error="carrinho vazio")
     else:
         resultado = carr.calcular_total(carrinho)
         total = resultado.data
-        return {"ok": True, "data": {"venda": {"itens": carrinho, "total": total}}, "error": None} 
-    # {"itens": carrinho, "total": total}, None
+        return Result(ok=True, data={"itens": carrinho, "total": total})
 
 
-def aplicar_desconto(venda, desconto):
+def aplicar_desconto(venda: dict, desconto: int) -> Result[dict]:
 
     nova_venda_com_desconto = venda.copy()
 
@@ -20,27 +20,27 @@ def aplicar_desconto(venda, desconto):
     resultado = carr.calcular_desconto(total_bruto, desconto)
     total_venda_com_desconto = resultado.data
     nova_venda_com_desconto["total_com_desconto"] = total_venda_com_desconto
-    return {"ok": True, "data": {"venda": nova_venda_com_desconto}, "error": None}
+    return Result(ok=True, data=nova_venda_com_desconto)
 
 
-def aplicar_taxa_venda(venda, taxa):
+def aplicar_taxa_venda(venda: dict, taxa: int) -> Result[dict]:
 
     nova_venda_com_taxa = venda.copy()
     total = nova_venda_com_taxa["total_com_desconto"]
     resultado = carr.aplica_taxa(total, taxa)
     total_com_taxa = resultado.data
     nova_venda_com_taxa["total_final"] = total_com_taxa
-    return {"ok": True, "data": {"venda": nova_venda_com_taxa}, "error": None}
+    return Result(ok=True, data=nova_venda_com_taxa)
 
 
-def registrar_pagamento(venda, pagamento):
+def registrar_pagamento(venda: dict, pagamento: str) -> Result[dict]:
 
     venda_paga = venda.copy()
     venda_paga["pagamento"] = pagamento
-    return {"ok": True, "data": {"venda": venda_paga}, "error": None}
+    return Result(ok=True, data=venda_paga) 
 
 
-def venda_paga_no_dinheiro(venda, valor_pago):
+def venda_paga_no_dinheiro(venda: dict, valor_pago: float) -> Result[dict]:
 
     nova_venda_com_troco = venda.copy()
     tipo_de_venda = nova_venda_com_troco["pagamento"]
@@ -48,40 +48,45 @@ def venda_paga_no_dinheiro(venda, valor_pago):
 
     if tipo_de_venda == "dinheiro" and total_final <= valor_pago:
         if total_final == valor_pago:
-            return {"ok": True, "data": {"venda": nova_venda_com_troco}, "error": None}
+            return Result(ok=True, data=nova_venda_com_troco) 
 
         nova_venda_com_troco["troco"] = valor_pago - total_final
-        return {"ok": True, "data": {"venda": nova_venda_com_troco}, "error": None}
+        return Result(ok=True, data=nova_venda_com_troco)
 
     if total_final > valor_pago:
-        return {"ok": False, "data": None, "error": "dinheiro insuficiente"}
+        return Result(ok=False, error="dinheiro insuficiente")
+    
+    return Result(ok=False, error="metodo inválido")    
+        
 
-
-def venda_paga_no_debito(venda, valor_pago):
+def venda_paga_no_debito(venda: dict, valor_pago: int) -> Result[dict]:
 
     venda_debito = venda.copy()
     if venda_debito["pagamento"] == "debito":
         if venda_debito["total_final"] == valor_pago:
             venda_debito["valor_pago"] = valor_pago
-            return {"ok": True, "data": {"venda": venda_debito}, "error": None}
+            return Result(ok=True, data=venda_debito) 
 
         if valor_pago != venda_debito["total_final"]:
-            return {"ok": False, "data": None, "error": "valor incorreto"}
+            return Result(ok=False, error="valor incorreto") 
+    
+    return Result(ok=False, error="metodo inválido")    
 
 
-def venda_paga_no_credito(venda, valor_pago):
+def venda_paga_no_credito(venda: dict, valor_pago: int) -> Result[dict]:
 
     venda_credito = venda.copy()
     if venda_credito["pagamento"] == "credito":
         if venda_credito["total_final"] == valor_pago:
             venda_credito["valor_pago"] = valor_pago
-            return {"ok": True, "data": {"venda": venda_credito}, "error": None}
+            return Result(ok=True, data=venda_credito) 
 
         if valor_pago != venda_credito["total_final"]:
-            return {"ok": False, "data": None, "error": "valor incorreto"}
+            return Result(ok=False, error="valor incorreto")
+    return Result(ok=False, error="metodo inválido")    
 
 
-def processar_pagamento(venda, valor_pago):
+def processar_pagamento(venda: dict, valor_pago: int) -> Result[dict]:
 
     venda_a_processar = venda.copy()
     if venda_a_processar["pagamento"] == "dinheiro":
@@ -97,10 +102,11 @@ def processar_pagamento(venda, valor_pago):
         return resultado
 
     else:
-        return {"ok": False, "data": None, "error": "metodo inválido"}
+        return Result(ok=False, error="metodo inválido") 
+    # {"ok": False, "data": None, "error": "metodo inválido"}
 
 
-def extrair_itens_vendidos(venda):
+def extrair_itens_vendidos(venda: dict) -> Result[dict]:
 
     itens_vendidos = []
     carrinho = venda["itens"]
@@ -109,4 +115,4 @@ def extrair_itens_vendidos(venda):
         item = {"indice": itens["indice"], "qtd": itens["qtd"]}
         itens_vendidos.append(item)
     
-    return {"ok": True, "data": {"itens_vendidos": itens_vendidos}, "error": None}
+    return Result(ok=True, data=itens_vendidos) 
