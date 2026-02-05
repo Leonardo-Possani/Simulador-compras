@@ -1,11 +1,12 @@
+from simulador.domain.entities import ItemCarrinho, ResultadoCarrinho
 from simulador.domain.result import Result
 
 # Buscar
 
 
-def item_existe_no_carrinho(carrinho: list[dict], indice: int) -> Result[dict]:
+def item_existe_no_carrinho(carrinho: list[ItemCarrinho], indice: int) -> Result[ItemCarrinho | None]:
     for item in carrinho:
-        if item["indice"] == indice:
+        if item.indice == indice:
             return Result(ok=True, data=item)
     return Result(ok=False)
 
@@ -28,42 +29,43 @@ def valida_qtd_atual_carrinho_menor_estoque(qtd_existente_carrinho: int, quantid
 # Mutações do carrinho
 
 
-def adicionar_item(carrinho: list[dict], estoque: list[dict], indice: int, quantidade: int) -> Result[dict]:
+def adicionar_item(carrinho: list[ItemCarrinho], estoque: list[dict], indice: int, quantidade: int) -> Result[ResultadoCarrinho]:
 
     resultado = valida_indice_no_estoque(estoque, indice)
     if not resultado.ok:
         return Result(ok=False, error="indice inexistente") 
-    # {"ok": False, "data": None, "error": "indice inexistente"}
 
     qtd_estoque = estoque[indice]["estoque"]
 
     if quantidade <= 0:
         return Result(ok=False, error="quantidade indisponível") 
-    # {"ok": False, "data": None, "error": "quantidade indisponível"}
 
     resultado = item_existe_no_carrinho(carrinho, indice)
     item = resultado.data
 
     if resultado.ok:
-        qtd_existente_carrinho = item["qtd"]
+        qtd_existente_carrinho = item.qtd
         resultado = valida_qtd_atual_carrinho_menor_estoque(
             qtd_existente_carrinho, quantidade, qtd_estoque
         )
         if not resultado.ok:
             return Result(ok=False, error="quantidade indisponível")
-        # {"ok": False, "data": None, "error": "quantidade indisponível"}
 
-        item["qtd"] += quantidade
-        return Result(ok=True, data={"item": item, "carrinho": carrinho})
-    # {"ok": True, "data": {"item": item, "carrinho": carrinho}, "error": None}
+        item.qtd += quantidade
+        return Result(ok=True, data=ResultadoCarrinho(item, carrinho))
 
     produto = estoque[indice]
-    nome = produto["produto"]
-    preco = produto["preco"]
-    item = {"produto": nome, "preco": preco, "qtd": quantidade, "indice": indice}
+    item = ItemCarrinho(
+            produto=produto["produto"],
+            preco=produto["preco"],
+            qtd=quantidade,
+            indice=indice
+            )
+    # nome = produto["produto"]
+    # preco = produto["preco"]
+    # item = {"produto": nome, "preco": preco, "qtd": quantidade, "indice": indice}
     carrinho.append(item)
-    return Result(ok=True, data={"item": item, "carrinho": carrinho}) 
-    # {"ok": True, "data": {"item": item, "carrinho": carrinho}, "error": None}
+    return Result(ok=True, data=ResultadoCarrinho(item, carrinho)) 
 
 
 def remover_item(carrinho: list[dict], indice: int) -> Result[dict]:
