@@ -1,8 +1,9 @@
 from simulador.domain import carrinho as carr
 from simulador.domain.result import Result
+from simulador.domain.entities import ItemCarrinho
 
 
-def fechar_venda_com_carrinho_valido(carrinho: list[dict]) -> Result[dict]:
+def fechar_venda_com_carrinho_valido(carrinho: list[ItemCarrinho]) -> Result[dict]:
 
     if not carrinho:
         return Result(ok=False, error="carrinho vazio")
@@ -112,7 +113,7 @@ def extrair_itens_vendidos(venda: dict) -> Result[dict]:
     carrinho = venda["itens"]
 
     for itens in carrinho:
-        item = {"indice": itens["indice"], "qtd": itens["qtd"]}
+        item = {"indice": itens.indice, "qtd": itens.qtd}
         itens_vendidos.append(item)
     
     return Result(ok=True, data=itens_vendidos) 

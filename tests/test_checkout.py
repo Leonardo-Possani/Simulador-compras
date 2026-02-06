@@ -1,7 +1,7 @@
 from copy import deepcopy
 
 from simulador.application import checkout as chek
-
+from simulador.domain.entities import ItemCarrinho
 
 def test_fluxo_finalizar_venda():
 
@@ -11,8 +11,8 @@ def test_fluxo_finalizar_venda():
     ]
 
     carrinho = [
-        {"produto": "mouse", "preco": 20.0, "qtd": 3, "indice": 0},
-        {"produto": "teclado", "preco": 50.0, "qtd": 1, "indice": 1},
+        ItemCarrinho(produto="mouse", preco=20.0, qtd=3, indice=0),
+        ItemCarrinho(produto="teclado", preco=50.0, qtd=1, indice=1),
     ]
 
     resultado = chek.finalizar_venda(carrinho, estoque, desconto=0, taxa=0, pagamento="credito", valor_pago=110)
@@ -32,8 +32,8 @@ def test_fluxo_finalizar_venda_erro_estoque_insuficiente():
     estoque_copia = deepcopy(estoque)
 
     carrinho = [
-        {"produto": "mouse", "preco": 20.0, "qtd": 3, "indice": 0},
-        {"produto": "teclado", "preco": 50.0, "qtd": 1, "indice": 1},
+        ItemCarrinho(produto="mouse", preco=20.0, qtd=3, indice=0),
+        ItemCarrinho(produto="teclado", preco=50.0, qtd=1, indice=1),
     ]
     carrinho_copia = deepcopy(carrinho)
 

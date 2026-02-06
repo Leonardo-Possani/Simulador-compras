@@ -24,9 +24,8 @@ def test_adicionar_mesmo_item_soma_quantidade():
 
     estoque = [{"produto": "mouse", "preco": 20.0, "estoque": 10}]
     carrinho = [
-                ItemCarrinho(produto="nouse", preco=20.0, qtd=3, indice=0),
-            ]
-    # {"produto": "mouse", "preco": 20.0, "qtd": 3, "indice": 0}
+        ItemCarrinho(produto="nouse", preco=20.0, qtd=3, indice=0),
+    ]
 
     resultado = carr.adicionar_item(carrinho, estoque, 0, 2)
 
@@ -52,11 +51,10 @@ def test_nao_permite_quantidade_menor_ou_igual_zero():
 def test_nao_permite_quantidade_maior_que_estoque():
 
     estoque = [{"produto": "mouse", "preco": 20.0, "estoque": 5}]
-    # carrinho = [{"produto": "mouse", "preco": 20.0, "qtd": 3, "indice": 0}]
     carrinho = [
-            ItemCarrinho(produto="nouse", preco=20.0, qtd=3, indice=0),
+        ItemCarrinho(produto="nouse", preco=20.0, qtd=3, indice=0),
 
-        ]
+    ]
 
     resultado = carr.adicionar_item(carrinho, estoque, 0, 3)
 
@@ -81,11 +79,9 @@ def test_nao_permite_indice_invalido():
 
 def test_remove_item_do_carrinho():
     carrinho = [
-      ItemCarrinho(produto="mouse", preco=20.0, qtd=3, indice=0),
-      ItemCarrinho(produto="teclado", preco=50.0, qtd=1, indice=1)  
+        ItemCarrinho(produto="mouse", preco=20.0, qtd=3, indice=0),
+        ItemCarrinho(produto="teclado", preco=50.0, qtd=1, indice=1)
     ]
-    # {"produto": "mouse", "preco": 20.0, "qtd": 3, "indice": 0},
-    # {"produto": "teclado", "preco": 50.0, "qtd": 1, "indice": 1},
 
     resultado = carr.remover_item(carrinho, 0)
 
@@ -96,15 +92,11 @@ def test_remove_item_do_carrinho():
 
 
 def test_nao_remove_item_inexistente_do_carrinho():
-    
+
     carrinho = [
-      ItemCarrinho(produto="mouse", preco=20.0, qtd=3, indice=0),
-      ItemCarrinho(produto="teclado", preco=50.0, qtd=1, indice=1)  
+        ItemCarrinho(produto="mouse", preco=20.0, qtd=3, indice=0),
+        ItemCarrinho(produto="teclado", preco=50.0, qtd=1, indice=1)
     ]
-    # carrinho = [
-    #    {"produto": "mouse", "preco": 20.0, "qtd": 3, "indice": 0},
-    #    {"produto": "teclado", "preco": 50.0, "qtd": 1, "indice": 1},
-    # ]
 
     resultado = carr.remover_item(carrinho, 2)
 
@@ -117,14 +109,9 @@ def test_nao_remove_item_inexistente_do_carrinho():
 def test_remove_item_com_ordem_diferente_do_indice():
 
     carrinho = [
-      ItemCarrinho(produto="mouse", preco=20.0, qtd=3, indice=0),
-      ItemCarrinho(produto="teclado", preco=50.0, qtd=1, indice=1)  
+        ItemCarrinho(produto="mouse", preco=20.0, qtd=3, indice=0),
+        ItemCarrinho(produto="teclado", preco=50.0, qtd=1, indice=1)
     ]
-
-    # carrinho = [
-    #    {"produto": "teclado", "preco": 50.0, "qtd": 1, "indice": 1},
-    #    {"produto": "mouse", "preco": 20.0, "qtd": 3, "indice": 0},
-    # ]
 
     resultado = carr.remover_item(carrinho, 0)
 
@@ -137,8 +124,8 @@ def test_remove_item_com_ordem_diferente_do_indice():
 def test_calcular_total_bruto_do_carrinho():
 
     carrinho = [
-        {"produto": "mouse", "preco": 20.0, "qtd": 2, "indice": 0},
-        {"produto": "teclado", "preco": 50.0, "qtd": 1, "indice": 1},
+        ItemCarrinho(produto="mouse", preco=20.0, qtd=2, indice=0),
+        ItemCarrinho(produto="teclado", preco=50.0, qtd=1, indice=1),
     ]
 
     resultado = carr.calcular_total(carrinho)
@@ -198,8 +185,8 @@ def test_taxa_zero_nao_deve_alterar_total():
 def test_total_final_menos_descontos_mais_taxas():
 
     carrinho = [
-        {"produto": "mouse", "preco": 20.0, "qtd": 2, "indice": 0},
-        {"produto": "teclado", "preco": 50.0, "qtd": 1, "indice": 1},
+        ItemCarrinho(produto="mouse", preco=20.0, qtd=2, indice=0),
+        ItemCarrinho(produto="teclado", preco=50.0, qtd=1, indice=1),
     ]
 
     resultado = carr.total_final(carrinho, 5, 8)
@@ -212,8 +199,8 @@ def test_total_final_menos_descontos_mais_taxas():
 def test_validar_total_sem_descomtos_sem_taxa():
 
     carrinho = [
-        {"produto": "mouse", "preco": 20.0, "qtd": 3, "indice": 0},
-        {"produto": "teclado", "preco": 50.0, "qtd": 1, "indice": 1},
+        ItemCarrinho(produto="mouse", preco=20.0, qtd=3, indice=0),
+        ItemCarrinho(produto="teclado", preco=50.0, qtd=1, indice=1),
     ]
 
     resultado = carr.total_final(carrinho, 0, 0)

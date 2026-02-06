@@ -1,5 +1,5 @@
 from simulador.domain import venda as vd
-
+from simulador.domain.entities import ItemCarrinho
 
 def test_nao_permite_fechar_venda_com_carrinho_vazio():
 
@@ -14,8 +14,8 @@ def test_nao_permite_fechar_venda_com_carrinho_vazio():
 def test_fechar_venda_com_carrinho_valido():
 
     carrinho = [
-        {"produto": "mouse", "preco": 20.0, "qtd": 3, "indice": 0},
-        {"produto": "teclado", "preco": 50.0, "qtd": 1, "indice": 1},
+        ItemCarrinho(produto="mouse", preco=20.0, qtd=3, indice=0),
+        ItemCarrinho(produto="teclado", preco=50.0, qtd=1, indice=1),
     ]
 
     resultado = vd.fechar_venda_com_carrinho_valido(carrinho)
@@ -28,8 +28,8 @@ def test_fechar_venda_com_carrinho_valido():
 def test_venda_calcula_total():
 
     carrinho = [
-        {"produto": "mouse", "preco": 20.0, "qtd": 3, "indice": 0},
-        {"produto": "teclado", "preco": 50.0, "qtd": 1, "indice": 1},
+        ItemCarrinho(produto="mouse", preco=20.0, qtd=3, indice=0),
+        ItemCarrinho(produto="teclado", preco=50.0, qtd=1, indice=1),
     ]
 
     resultado = vd.fechar_venda_com_carrinho_valido(carrinho)
@@ -266,8 +266,8 @@ def test_processar_pagamento():
 def test_extrair_itens_vendidos():
 
     carrinho = [
-        {"produto": "mouse", "preco": 20.0, "qtd": 3, "indice": 0},
-        {"produto": "teclado", "preco": 50.0, "qtd": 1, "indice": 1},
+        ItemCarrinho(produto="mouse", preco=20.0, qtd=3, indice=0),
+        ItemCarrinho(produto="teclado", preco=50.0, qtd=1, indice=1),
     ]
 
     venda = {

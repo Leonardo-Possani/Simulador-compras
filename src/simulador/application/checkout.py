@@ -1,10 +1,11 @@
 from simulador.domain import estoque as etq
 from simulador.domain import venda as vd
 from simulador.domain.result import Result
+from simulador.domain.entities import ItemCarrinho
 
 
 def finalizar_venda(
-    carrinho: list[dict],
+    carrinho: list[ItemCarrinho],
     estoque: list[dict],
     desconto: int,
     taxa: int,

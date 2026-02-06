@@ -33,12 +33,12 @@ def adicionar_item(carrinho: list[ItemCarrinho], estoque: list[dict], indice: in
 
     resultado = valida_indice_no_estoque(estoque, indice)
     if not resultado.ok:
-        return Result(ok=False, error="indice inexistente") 
+        return Result(ok=False, error="indice inexistente")
 
     qtd_estoque = estoque[indice]["estoque"]
 
     if quantidade <= 0:
-        return Result(ok=False, error="quantidade indisponível") 
+        return Result(ok=False, error="quantidade indisponível")
 
     resultado = item_existe_no_carrinho(carrinho, indice)
     item = resultado.data
@@ -56,69 +56,60 @@ def adicionar_item(carrinho: list[ItemCarrinho], estoque: list[dict], indice: in
 
     produto = estoque[indice]
     item = ItemCarrinho(
-            produto=produto["produto"],
-            preco=produto["preco"],
-            qtd=quantidade,
-            indice=indice
-            )
-    # nome = produto["produto"]
-    # preco = produto["preco"]
-    # item = {"produto": nome, "preco": preco, "qtd": quantidade, "indice": indice}
+        produto=produto["produto"],
+        preco=produto["preco"],
+        qtd=quantidade,
+        indice=indice
+    )
     carrinho.append(item)
-    return Result(ok=True, data=ResultadoCarrinho(item, carrinho)) 
+    return Result(ok=True, data=ResultadoCarrinho(item, carrinho))
 
 
-def remover_item(carrinho: list[dict], indice: int) -> Result[dict]:
+def remover_item(carrinho: list[ItemCarrinho], indice: int) -> Result[ItemCarrinho]:
 
     resultado = item_existe_no_carrinho(carrinho, indice)
     item = resultado.data
     if resultado.ok:
         carrinho.remove(item)
         return Result(ok=True, data=item)
-    # {"ok": True, "data": {"item": item}, "error": None}
+
     return Result(ok=False, error="indice inexistente")
-    # {"ok": False, "data": None, "error": "indice inexistente"}
 
 
 # Cálculos financeiros
 
 
-def calcular_total(carrinho: list[dict]) -> Result[float]:
+def calcular_total(carrinho: list[ItemCarrinho]) -> Result[float]:
 
     total = 0
 
     for item in carrinho:
-        total += item["preco"] * item["qtd"]
+        total += item.preco * item.qtd
 
     return Result(ok=True, data=total)
-
-    # {"ok": True, "data": {"total": total}, "error": None}
 
 
 def calcular_desconto(total: float, desconto: int) -> Result[float]:
 
     total_de_desconto = total * (desconto / 100)
     total_com_desconto = total - total_de_desconto
-    return Result(ok=True, data=total_com_desconto) 
-    # {"ok": True, "data": {"total_com_desconto": total_com_desconto}, "error": None}
+    return Result(ok=True, data=total_com_desconto)
 
 
 def aplica_taxa(total: float, taxa: int) -> Result[float]:
 
     total_com_taxa = total + taxa
-    return Result(ok=True, data=total_com_taxa) 
-    # {"ok": True, "data": {"total_com_taxa": total_com_taxa}, "error": None}
+    return Result(ok=True, data=total_com_taxa)
 
 
 # Orquestração
 
 
-def total_final(carrinho: list[dict], desconto: int, taxa: int) -> Result[float]:
+def total_final(carrinho: list[ItemCarrinho], desconto: int, taxa: int) -> Result[float]:
 
     resultado = calcular_total(carrinho)
     total_bruto = resultado.data
     resultado = calcular_desconto(total_bruto, desconto)
     total_com_desconto = resultado.data
     total_final = total_com_desconto + taxa
-    return Result(ok=True, data=total_final) 
-    # {"ok": True, "data": {"total_final": total_final}, "error": None}
+    return Result(ok=True, data=total_final)
