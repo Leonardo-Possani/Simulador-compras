@@ -15,19 +15,15 @@ class ResultadoCarrinho:
     carrinho: list[ItemCarrinho]
 
 
-"""
-@dataclass(frozen=True)
-class ProdutoEstoque:
-    produto: str
-    preco: float
-    estoque: int
-"""
-   
-
-@dataclass(frozen=True)
+@dataclass
 class Venda:
     itens: list[ItemCarrinho]
     total: float
+
     total_com_desconto: float | None = None
     total_final: float | None = None
+    
+    pagamento: str | None = None
+    valor_pago: float | None = None
     troco: float | None = None 
+

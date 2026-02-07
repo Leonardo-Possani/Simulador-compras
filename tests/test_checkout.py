@@ -19,7 +19,7 @@ def test_fluxo_finalizar_venda():
 
     assert resultado.ok is True
     assert resultado.data["estoque"][0]["estoque"] == 7
-    assert resultado.data["venda"]["total_final"] == 110
+    assert resultado.data["venda"].total_final == 110
     assert resultado.error is None
 
 
