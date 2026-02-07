@@ -1,45 +1,98 @@
-# 🛒 Simulador de Compras
+# 🛒 Simulador de Compras (PDV)
 
-Um projeto simples e didático para simular compras, calcular valores totais, aplicar regras de precificação e servir como base para estudos de lógica, Python e versionamento com Git.
+Projeto pessoal para estudos de **backend** com foco em **DDD (Domain-Driven Design)**, **TDD** e regras de negócio de um PDV (ponto de venda). A ideia é manter o domínio simples, bem testado e fácil de evoluir.
 
 ---
 
-## 📌 Sobre o Projeto
+## 🎯 Objetivos deste repositório
 
-O **Simulador-compras** foi criado com o objetivo de facilitar testes e experimentos envolvendo:
-- Lista de produtos  
-- Cálculo de valores totais  
-- Controle de quantidades  
-- Regras de negócio personalizáveis (descontos, taxas, promoções, etc.)
+- Praticar **Python** com orientação a domínio.
+- Exercitar **TDD** com testes unitários claros e objetivos.
+- Modelar regras de negócio de um PDV: carrinho, estoque, venda e checkout.
+- Construir um portfólio sólido para buscar estágio em backend.
 
-O repositório é ideal para fins educacionais, estudos de Git, ou como ponto de partida para evoluir para um sistema de compras real.
+---
+
+## 🧩 Domínio modelado
+
+O sistema foi dividido em camadas e conceitos do domínio:
+
+- **Carrinho**: itens e quantidades selecionadas.
+- **Estoque**: validação de disponibilidade e baixa após a venda.
+- **Venda**: descontos, taxas, pagamento e validações.
+- **Checkout**: orquestra o fluxo de fechamento da venda.
+
+---
+
+## 🧪 Testes (TDD)
+
+Os testes unitários ficam em `tests/` e cobrem as regras do domínio.  
+Para rodar:
+
+```bash
+pytest
+```
 
 ---
 
 ## 🧰 Tecnologias Utilizadas
 
-- **Python 3.13.7**
-- Biblioteca padrão do Python
-- - JSON (Persistência de dados)
-  
+- **Python 3.10+**
+- **Pytest** (testes)
+- **Ruff** (lint)
+- **Pyright** (type hints)
+
+---
+
 ## 🗂 Estrutura do projeto
+
 ```bash
 Simulador-compras
-  ├── src/ # Código-fonte do simulador
-  ├── .gitignore
+  ├── src/
+  │   └── simulador/
+  │       ├── application/  # Casos de uso (ex.: checkout)
+  │       └── domain/       # Regras de negócio
+  ├── tests/                # Testes unitários
+  ├── pyproject.toml
   └── README.md
 ```
 
-## 🚀 Como Executar
+---
+
+## ▶️ Como executar localmente
 
 1. **Clone o repositório**
- ```bash
- git clone git@github.com:Leonardo-Possani/Simulador-compras.git
- cd Simulador-compras
- python src/main.py 
+```bash
+git clone git@github.com:Leonardo-Possani/Simulador-compras.git
+cd Simulador-compras
 ```
 
-## 🔧 Melhorias Futuras
-- Adicionar e remover quantidades do estoque
-- Quando gerar o cupom fiscal remover quantidades do estoque
-- testes com (unittest, pytest)
+2. **Crie o ambiente e instale dependências**
+```bash
+python -m venv .venv
+source .venv/bin/activate
+pip install -e ".[dev]"
+```
+
+3. **Execute os testes**
+```bash
+pytest
+```
+
+---
+
+## 🔧 Próximos passos (roadmap)
+
+- [ ] Interface GUI, CLI
+- [ ] Evoluir a modelagem para suportar múltiplos meios de pagamento
+- [ ] Criar uma API simples para expor o domínio (FastAPI/Flask)
+- [ ] Aumentar cobertura de testes
+- [ ] Estoque integrado
+
+---
+
+## 🙋‍♂️ Sobre mim
+
+Sou estudante de programação buscando **estágio em backend**.  
+Estou desenvolvendo este projeto como parte do meu aprendizado e portfólio.  
+Sugestões e feedbacks são bem-vindos!
