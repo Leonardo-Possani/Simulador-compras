@@ -15,7 +15,7 @@ class ResultadoCarrinho:
     carrinho: list[ItemCarrinho]
 
 
-@dataclass
+@dataclass(frozen=True)
 class Venda:
     itens: list[ItemCarrinho]
     total: float

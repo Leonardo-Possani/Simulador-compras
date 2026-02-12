@@ -42,8 +42,8 @@ def test_venda_calcula_total():
 def test_venda_com_desconto():
 
     carrinho = [
-        {"produto": "mouse", "preco": 20.0, "qtd": 3, "indice": 0},
-        {"produto": "teclado", "preco": 50.0, "qtd": 1, "indice": 1},
+        ItemCarrinho(produto="mouse", preco=20.0, qtd=3, indice=0),
+        ItemCarrinho(produto="teclado", preco=50.0, qtd=1, indice=1),
     ]
 
     venda = Venda(itens=carrinho, total=110) 
@@ -58,8 +58,8 @@ def test_venda_com_desconto():
 def test_aplicar_taxa_na_venda():
 
     carrinho = [
-        {"produto": "mouse", "preco": 20.0, "qtd": 3, "indice": 0},
-        {"produto": "teclado", "preco": 50.0, "qtd": 1, "indice": 1},
+        ItemCarrinho(produto="mouse", preco=20.0, qtd=3, indice=0),
+        ItemCarrinho(produto="teclado", preco=50.0, qtd=1, indice=1),
     ]
 
     venda = Venda(itens=carrinho, total=110, total_com_desconto=99)
@@ -74,8 +74,8 @@ def test_aplicar_taxa_na_venda():
 def test_registrar_pagamento_venda():
 
     carrinho = [
-        {"produto": "mouse", "preco": 20.0, "qtd": 3, "indice": 0},
-        {"produto": "teclado", "preco": 50.0, "qtd": 1, "indice": 1},
+        ItemCarrinho(produto="mouse", preco=20.0, qtd=3, indice=0),
+        ItemCarrinho(produto="teclado", preco=50.0, qtd=1, indice=1),
     ]
 
     venda = Venda(itens=carrinho, total=110, total_com_desconto=99, total_final=114)
@@ -90,8 +90,8 @@ def test_registrar_pagamento_venda():
 def test_pagamento_em_dinheiro_calcula_troca():
 
     carrinho = [
-        {"produto": "mouse", "preco": 20.0, "qtd": 3, "indice": 0},
-        {"produto": "teclado", "preco": 50.0, "qtd": 1, "indice": 1},
+        ItemCarrinho(produto="mouse", preco=20.0, qtd=3, indice=0),
+        ItemCarrinho(produto="teclado", preco=50.0, qtd=1, indice=1),
     ]
     venda = Venda(itens=carrinho, total=110, total_com_desconto=99, total_final=114, pagamento="dinheiro")
 
@@ -105,8 +105,8 @@ def test_pagamento_em_dinheiro_calcula_troca():
 def test_pagamento_em_dinheiro_menor_que_total_final():
 
     carrinho = [
-        {"produto": "mouse", "preco": 20.0, "qtd": 3, "indice": 0},
-        {"produto": "teclado", "preco": 50.0, "qtd": 1, "indice": 1},
+        ItemCarrinho(produto="mouse", preco=20.0, qtd=3, indice=0),
+        ItemCarrinho(produto="teclado", preco=50.0, qtd=1, indice=1),
     ]
 
     venda = Venda(itens=carrinho, total=110, total_com_desconto=99, total_final=114, pagamento="dinheiro")
@@ -121,8 +121,8 @@ def test_pagamento_em_dinheiro_menor_que_total_final():
 def test_dinheiro_exato():
 
     carrinho = [
-        {"produto": "mouse", "preco": 20.0, "qtd": 3, "indice": 0},
-        {"produto": "teclado", "preco": 50.0, "qtd": 1, "indice": 1},
+        ItemCarrinho(produto="mouse", preco=20.0, qtd=3, indice=0),
+        ItemCarrinho(produto="teclado", preco=50.0, qtd=1, indice=1),
     ]
 
     venda = Venda(itens=carrinho, total=110, total_com_desconto=99, total_final=114, pagamento="dinheiro")
@@ -137,8 +137,8 @@ def test_dinheiro_exato():
 def test_pagamento_debito():
 
     carrinho = [
-        {"produto": "mouse", "preco": 20.0, "qtd": 3, "indice": 0},
-        {"produto": "teclado", "preco": 50.0, "qtd": 1, "indice": 1},
+        ItemCarrinho(produto="mouse", preco=20.0, qtd=3, indice=0),
+        ItemCarrinho(produto="teclado", preco=50.0, qtd=1, indice=1),
     ]
     venda = Venda(itens=carrinho, total=110, total_com_desconto=99, total_final=114, pagamento="debito")
     
@@ -152,8 +152,8 @@ def test_pagamento_debito():
 def test_pagamento_debito_valor_pago_incorreto():
 
     carrinho = [
-        {"produto": "mouse", "preco": 20.0, "qtd": 3, "indice": 0},
-        {"produto": "teclado", "preco": 50.0, "qtd": 1, "indice": 1},
+        ItemCarrinho(produto="mouse", preco=20.0, qtd=3, indice=0),
+        ItemCarrinho(produto="teclado", preco=50.0, qtd=1, indice=1),
     ]
     venda = Venda(itens=carrinho, total=110, total_com_desconto=99, total_final=114, pagamento="debito")
 
@@ -164,11 +164,11 @@ def test_pagamento_debito_valor_pago_incorreto():
     assert resultado.error == "valor incorreto"
 
 
-def test_pagamento_em_cretido_a_vista():
+def test_pagamento_em_credido_a_vista():
 
     carrinho = [
-        {"produto": "mouse", "preco": 20.0, "qtd": 3, "indice": 0},
-        {"produto": "teclado", "preco": 50.0, "qtd": 1, "indice": 1},
+        ItemCarrinho(produto="mouse", preco=20.0, qtd=3, indice=0),
+        ItemCarrinho(produto="teclado", preco=50.0, qtd=1, indice=1),
     ]
     venda = Venda(itens=carrinho, total=110, total_com_desconto=99, total_final=114, pagamento="credito")
     
@@ -182,8 +182,8 @@ def test_pagamento_em_cretido_a_vista():
 def test_credito_com_valor_incorreto():
 
     carrinho = [
-        {"produto": "mouse", "preco": 20.0, "qtd": 3, "indice": 0},
-        {"produto": "teclado", "preco": 50.0, "qtd": 1, "indice": 1},
+        ItemCarrinho(produto="mouse", preco=20.0, qtd=3, indice=0),
+        ItemCarrinho(produto="teclado", preco=50.0, qtd=1, indice=1),
     ]
     venda = Venda(itens=carrinho, total=110, total_com_desconto=99, total_final=114, pagamento="credito")
 
@@ -197,11 +197,11 @@ def test_credito_com_valor_incorreto():
 def test_processar_pagamento():
 
     carrinho = [
-        {"produto": "mouse", "preco": 20.0, "qtd": 3, "indice": 0},
-        {"produto": "teclado", "preco": 50.0, "qtd": 1, "indice": 1},
+        ItemCarrinho(produto="mouse", preco=20.0, qtd=3, indice=0),
+        ItemCarrinho(produto="teclado", preco=50.0, qtd=1, indice=1),
     ]
 
-    venda= Venda(itens=carrinho, total=110, total_com_desconto=99, total_final=114, pagamento="credito")
+    venda = Venda(itens=carrinho, total=110, total_com_desconto=99, total_final=114, pagamento="credito")
 
     resultado = vd.processar_pagamento(venda, valor_pago=114)
 
