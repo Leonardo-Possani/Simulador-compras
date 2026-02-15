@@ -1,20 +1,19 @@
-from simulador.domain.result import Result
+from simulador.domain.exceptions import EstoqueInsuficienteError
+from simulador.domain.entities import Produto
 
 
-def valida_estoque_para_venda(itens_vendidos: list[dict], estoque: list[dict]) -> Result[bool]:
+def valida_estoque_para_venda(itens_vendidos: list[dict], estoque: Estoque[list[Produto]]) -> bool:
 
     for item in itens_vendidos:
         indice = item["indice"]
         qtd = item["qtd"]
 
-        if estoque[indice]["estoque"] < qtd:
-            return Result(ok=False, error="estoque insuficiente")
-    return Result(ok=True)
+        if estoque[indice].estoque < qtd:
+            raise EstoqueInsuficienteError()
+    return True
 
 
-def venda_concluindo_baixar_estoque(
-    itens_vendidos: list[dict], estoque: list[dict]
-) -> Result[dict]:
+def venda_concluindo_baixar_estoque(itens_vendidos: list[dict], estoque: list[dict]) -> dict:
 
     estoque_atualizado = estoque.copy()
 
@@ -22,6 +21,6 @@ def venda_concluindo_baixar_estoque(
         indice = item["indice"]
         qtd = item["qtd"]
 
-        estoque_atualizado[indice]["estoque"] -= qtd
+        estoque_atualizado[indice].estoque -= qtd
 
-    return Result(ok=True, data=estoque_atualizado)
+    return estoque_atualizado

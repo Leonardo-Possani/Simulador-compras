@@ -55,6 +55,9 @@ fix = true
 line-length = 100
 src = ["src"]
 
+[tool.ruff.isort]
+known-first-party = ["simulador"]
+
 [tool.ruff.lint]
 select = ["E", "F", "I", "B", "UP"]
 ignore = ["E501"]

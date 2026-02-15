@@ -1,14 +1,19 @@
+import pytest
+
 from simulador.domain import venda as vd
 from simulador.domain.entities import ItemCarrinho, Venda
+from simulador.domain.exceptions import (
+    CarrinhoInvalidoError,
+    DinheiroInsuficienteError,
+    ValorIncorretoError,
+)
+
 
 def test_nao_permite_fechar_venda_com_carrinho_vazio():
 
     carrinho = []
-
-    resultado = vd.fechar_venda_com_carrinho_valido(carrinho)
-
-    assert resultado.ok is False
-    assert resultado.error == "carrinho vazio"
+    with pytest.raises(CarrinhoInvalidoError):
+        vd.fechar_venda_com_carrinho_valido(carrinho)
 
 
 def test_fechar_venda_com_carrinho_valido():
@@ -20,9 +25,7 @@ def test_fechar_venda_com_carrinho_valido():
 
     resultado = vd.fechar_venda_com_carrinho_valido(carrinho)
 
-    assert resultado.ok is True
-    assert resultado.error is None
-    assert resultado.data.itens == carrinho
+    assert resultado.itens == carrinho
 
 
 def test_venda_calcula_total():
@@ -34,9 +37,7 @@ def test_venda_calcula_total():
 
     resultado = vd.fechar_venda_com_carrinho_valido(carrinho)
 
-    assert resultado.ok is True
-    assert resultado.error is None
-    assert resultado.data.total == 110
+    assert resultado.total == 110
 
 
 def test_venda_com_desconto():
@@ -46,13 +47,11 @@ def test_venda_com_desconto():
         ItemCarrinho(produto="teclado", preco=50.0, qtd=1, indice=1),
     ]
 
-    venda = Venda(itens=carrinho, total=110) 
+    venda = Venda(itens=carrinho, total=110)
 
     resultado = vd.aplicar_desconto(venda, 10)
 
-    assert resultado.ok is True
-    assert resultado.data.total_com_desconto == 99
-    assert resultado.error is None
+    assert resultado.total_com_desconto == 99
 
 
 def test_aplicar_taxa_na_venda():
@@ -66,9 +65,7 @@ def test_aplicar_taxa_na_venda():
 
     resultado = vd.aplicar_taxa_venda(venda, 15)
 
-    assert resultado.ok is True
-    assert resultado.error is None
-    assert resultado.data.total_final == 114
+    assert resultado.total_final == 114
 
 
 def test_registrar_pagamento_venda():
@@ -82,9 +79,7 @@ def test_registrar_pagamento_venda():
 
     resultado = vd.registrar_pagamento(venda, "credito")
 
-    assert resultado.ok is True
-    assert resultado.error is None
-    assert resultado.data.pagamento == "credito"
+    assert resultado.pagamento == "credito"
 
 
 def test_pagamento_em_dinheiro_calcula_troca():
@@ -93,13 +88,13 @@ def test_pagamento_em_dinheiro_calcula_troca():
         ItemCarrinho(produto="mouse", preco=20.0, qtd=3, indice=0),
         ItemCarrinho(produto="teclado", preco=50.0, qtd=1, indice=1),
     ]
-    venda = Venda(itens=carrinho, total=110, total_com_desconto=99, total_final=114, pagamento="dinheiro")
+    venda = Venda(
+        itens=carrinho, total=110, total_com_desconto=99, total_final=114, pagamento="dinheiro"
+    )
 
     resultado = vd.venda_paga_no_dinheiro(venda, valor_pago=120)
 
-    assert resultado.ok is True
-    assert resultado.data.troco == 6
-    assert resultado.error is None
+    assert resultado.troco == 6
 
 
 def test_pagamento_em_dinheiro_menor_que_total_final():
@@ -109,13 +104,12 @@ def test_pagamento_em_dinheiro_menor_que_total_final():
         ItemCarrinho(produto="teclado", preco=50.0, qtd=1, indice=1),
     ]
 
-    venda = Venda(itens=carrinho, total=110, total_com_desconto=99, total_final=114, pagamento="dinheiro")
-    
-    resultado = vd.venda_paga_no_dinheiro(venda, valor_pago=100)
+    venda = Venda(
+        itens=carrinho, total=110, total_com_desconto=99, total_final=114, pagamento="dinheiro"
+    )
 
-    assert resultado.ok is False
-    assert resultado.data is None
-    assert resultado.error == "dinheiro insuficiente"
+    with pytest.raises(DinheiroInsuficienteError):
+        vd.venda_paga_no_dinheiro(venda, valor_pago=100)
 
 
 def test_dinheiro_exato():
@@ -125,13 +119,13 @@ def test_dinheiro_exato():
         ItemCarrinho(produto="teclado", preco=50.0, qtd=1, indice=1),
     ]
 
-    venda = Venda(itens=carrinho, total=110, total_com_desconto=99, total_final=114, pagamento="dinheiro")
- 
+    venda = Venda(
+        itens=carrinho, total=110, total_com_desconto=99, total_final=114, pagamento="dinheiro"
+    )
+
     resultado = vd.venda_paga_no_dinheiro(venda, valor_pago=114)
 
-    assert resultado.ok is True
-    assert resultado.error is None
-    assert resultado.data.troco is None
+    assert resultado.troco is None
 
 
 def test_pagamento_debito():
@@ -140,13 +134,13 @@ def test_pagamento_debito():
         ItemCarrinho(produto="mouse", preco=20.0, qtd=3, indice=0),
         ItemCarrinho(produto="teclado", preco=50.0, qtd=1, indice=1),
     ]
-    venda = Venda(itens=carrinho, total=110, total_com_desconto=99, total_final=114, pagamento="debito")
-    
+    venda = Venda(
+        itens=carrinho, total=110, total_com_desconto=99, total_final=114, pagamento="debito"
+    )
+
     resultado = vd.venda_paga_no_debito(venda, valor_pago=114)
 
-    assert resultado.ok is True
-    assert resultado.error is None
-    assert resultado.data.total_final == resultado.data.valor_pago
+    assert resultado.total_final == resultado.valor_pago
 
 
 def test_pagamento_debito_valor_pago_incorreto():
@@ -155,13 +149,12 @@ def test_pagamento_debito_valor_pago_incorreto():
         ItemCarrinho(produto="mouse", preco=20.0, qtd=3, indice=0),
         ItemCarrinho(produto="teclado", preco=50.0, qtd=1, indice=1),
     ]
-    venda = Venda(itens=carrinho, total=110, total_com_desconto=99, total_final=114, pagamento="debito")
+    venda = Venda(
+        itens=carrinho, total=110, total_com_desconto=99, total_final=114, pagamento="debito"
+    )
 
-    resultado = vd.venda_paga_no_debito(venda, valor_pago=110)
-
-    assert resultado.ok is False
-    assert resultado.data is None
-    assert resultado.error == "valor incorreto"
+    with pytest.raises(ValorIncorretoError):
+        vd.venda_paga_no_debito(venda, valor_pago=110)
 
 
 def test_pagamento_em_credido_a_vista():
@@ -170,13 +163,13 @@ def test_pagamento_em_credido_a_vista():
         ItemCarrinho(produto="mouse", preco=20.0, qtd=3, indice=0),
         ItemCarrinho(produto="teclado", preco=50.0, qtd=1, indice=1),
     ]
-    venda = Venda(itens=carrinho, total=110, total_com_desconto=99, total_final=114, pagamento="credito")
-    
+    venda = Venda(
+        itens=carrinho, total=110, total_com_desconto=99, total_final=114, pagamento="credito"
+    )
+
     resultado = vd.venda_paga_no_credito(venda, valor_pago=114)
 
-    assert resultado.ok is True
-    assert resultado.data.total_final == resultado.data.valor_pago
-    assert resultado.error is None
+    assert resultado.total_final == resultado.valor_pago
 
 
 def test_credito_com_valor_incorreto():
@@ -185,13 +178,11 @@ def test_credito_com_valor_incorreto():
         ItemCarrinho(produto="mouse", preco=20.0, qtd=3, indice=0),
         ItemCarrinho(produto="teclado", preco=50.0, qtd=1, indice=1),
     ]
-    venda = Venda(itens=carrinho, total=110, total_com_desconto=99, total_final=114, pagamento="credito")
-
-    resultado = vd.venda_paga_no_credito(venda, valor_pago=100)
-
-    assert resultado.ok is False
-    assert resultado.data is None
-    assert resultado.error == "valor incorreto"
+    venda = Venda(
+        itens=carrinho, total=110, total_com_desconto=99, total_final=114, pagamento="credito"
+    )
+    with pytest.raises(ValorIncorretoError):
+        vd.venda_paga_no_credito(venda, valor_pago=100)
 
 
 def test_processar_pagamento():
@@ -201,13 +192,13 @@ def test_processar_pagamento():
         ItemCarrinho(produto="teclado", preco=50.0, qtd=1, indice=1),
     ]
 
-    venda = Venda(itens=carrinho, total=110, total_com_desconto=99, total_final=114, pagamento="credito")
+    venda = Venda(
+        itens=carrinho, total=110, total_com_desconto=99, total_final=114, pagamento="credito"
+    )
 
     resultado = vd.processar_pagamento(venda, valor_pago=114)
 
-    assert resultado.ok is True
-    assert resultado.data.total_final == resultado.data.valor_pago
-    assert resultado.error is None
+    assert resultado.total_final == resultado.valor_pago
 
 
 def test_extrair_itens_vendidos():
@@ -217,16 +208,19 @@ def test_extrair_itens_vendidos():
         ItemCarrinho(produto="teclado", preco=50.0, qtd=1, indice=1),
     ]
 
-    venda = Venda(itens=carrinho, total=110, total_com_desconto=99, total_final=114, pagamento="credito", valor_pago=114)
-                                
+    venda = Venda(
+        itens=carrinho,
+        total=110,
+        total_com_desconto=99,
+        total_final=114,
+        pagamento="credito",
+        valor_pago=114,
+    )
+
     resultado = vd.extrair_itens_vendidos(venda)
 
-    assert resultado.ok is True
-    assert resultado.error is None
-    assert len(resultado.data) == 2
-    assert resultado.data[0]["indice"] == 0
-    assert resultado.data[1]["indice"] == 1
-    assert resultado.data[0]["qtd"] == 3
-    assert resultado.data[1]["qtd"] == 1
-
-
+    assert len(resultado) == 2
+    assert resultado[0]["indice"] == 0
+    assert resultado[1]["indice"] == 1
+    assert resultado[0]["qtd"] == 3
+    assert resultado[1]["qtd"] == 1

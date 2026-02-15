@@ -1,5 +1,6 @@
 from simulador.domain.entities import ItemCarrinho, ResultadoCarrinho
 from simulador.domain.exceptions import IndiceInexistenteError, QuantidadeInvalidaError
+
 # Buscar
 
 
@@ -9,14 +10,18 @@ def item_existe_no_carrinho(carrinho: list[ItemCarrinho], indice: int) -> ItemCa
             return item
     return None
 
+
 # Validações
+
 
 def valida_indice_no_estoque(estoque: list[dict], indice: int) -> None:
     if indice < 0 or indice >= len(estoque):
         raise IndiceInexistenteError()
 
 
-def valida_qtd_atual_carrinho_menor_estoque(qtd_existente_carrinho: int, quantidade: int, qtd_estoque: int) -> None:
+def valida_qtd_atual_carrinho_menor_estoque(
+    qtd_existente_carrinho: int, quantidade: int, qtd_estoque: int
+) -> None:
     if qtd_existente_carrinho + quantidade > qtd_estoque:
         raise QuantidadeInvalidaError()
 
@@ -25,10 +30,13 @@ def valida_qtd_negativa_ou_zero_adicionada_no_carrinho(quantidade: int) -> None:
     if quantidade <= 0:
         raise QuantidadeInvalidaError()
 
+
 # Mutações do carrinho
 
 
-def adicionar_item(carrinho: list[ItemCarrinho], estoque: list[dict], indice: int, quantidade: int) -> ResultadoCarrinho:
+def adicionar_item(
+    carrinho: list[ItemCarrinho], estoque: list[dict], indice: int, quantidade: int
+) -> ResultadoCarrinho:
 
     valida_indice_no_estoque(estoque, indice)
 
@@ -40,17 +48,13 @@ def adicionar_item(carrinho: list[ItemCarrinho], estoque: list[dict], indice: in
 
     if item:
         qtd_existente_carrinho = item.qtd
-        valida_qtd_atual_carrinho_menor_estoque(
-            qtd_existente_carrinho, quantidade, qtd_estoque)
+        valida_qtd_atual_carrinho_menor_estoque(qtd_existente_carrinho, quantidade, qtd_estoque)
         item.qtd += quantidade
         return ResultadoCarrinho(item, carrinho)
 
     produto = estoque[indice]
     item = ItemCarrinho(
-        produto=produto["produto"],
-        preco=produto["preco"],
-        qtd=quantidade,
-        indice=indice
+        produto=produto["produto"], preco=produto["preco"], qtd=quantidade, indice=indice
     )
     carrinho.append(item)
     return ResultadoCarrinho(item, carrinho)

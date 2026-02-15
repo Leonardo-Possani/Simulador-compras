@@ -25,7 +25,7 @@ def test_adicionar_mesmo_item_soma_quantidade():
 
     estoque = [{"produto": "mouse", "preco": 20.0, "estoque": 10}]
     carrinho = [
-        ItemCarrinho(produto="nouse", preco=20.0, qtd=3, indice=0),
+        ItemCarrinho(produto="mouse", preco=20.0, qtd=3, indice=0),
     ]
 
     resultado = carr.adicionar_item(carrinho, estoque, 0, 2)
