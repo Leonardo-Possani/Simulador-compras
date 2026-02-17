@@ -1,7 +1,12 @@
 import pytest
 
 
-from simulador.domain.exceptions import IndiceInexistenteError, QuantidadeInvalidaError
+from simulador.domain.exceptions import (
+    DescontoInvalidoError,
+    IndiceInexistenteError,
+    QuantidadeInvalidaError,
+    TaxaInvalidaError,
+)
 from simulador.domain import carrinho as carr
 from simulador.domain.entities import ItemCarrinho
 
@@ -43,6 +48,15 @@ def test_nao_permite_quantidade_menor_ou_igual_zero():
         carr.adicionar_item(carrinho, estoque, 0, 0)
 
 
+def test_nao_permite_adicionar_qtd_maior_que_estoque():
+
+    estoque = [{"produto": "mouse", "preco": 20.0, "estoque": 5}]
+    carrinho = []
+
+    with pytest.raises(QuantidadeInvalidaError):
+        carr.adicionar_item(carrinho, estoque, 0, 6)
+
+
 def test_nao_permite_quantidade_maior_que_estoque():
 
     estoque = [{"produto": "mouse", "preco": 20.0, "estoque": 5}]
@@ -65,7 +79,7 @@ def test_nao_permite_indice_invalido():
 def test_remove_item_do_carrinho():
     carrinho = [
         ItemCarrinho(produto="mouse", preco=20.0, qtd=3, indice=0),
-        ItemCarrinho(produto="teclado", preco=50.0, qtd=1, indice=1)
+        ItemCarrinho(produto="teclado", preco=50.0, qtd=1, indice=1),
     ]
 
     resultado = carr.remover_item(carrinho, 0)
@@ -79,7 +93,7 @@ def test_nao_remove_item_inexistente_do_carrinho():
 
     carrinho = [
         ItemCarrinho(produto="mouse", preco=20.0, qtd=3, indice=0),
-        ItemCarrinho(produto="teclado", preco=50.0, qtd=1, indice=1)
+        ItemCarrinho(produto="teclado", preco=50.0, qtd=1, indice=1),
     ]
     with pytest.raises(IndiceInexistenteError):
         carr.remover_item(carrinho, 2)
@@ -89,7 +103,7 @@ def test_remove_item_com_ordem_diferente_do_indice():
 
     carrinho = [
         ItemCarrinho(produto="mouse", preco=20.0, qtd=3, indice=0),
-        ItemCarrinho(produto="teclado", preco=50.0, qtd=1, indice=1)
+        ItemCarrinho(produto="teclado", preco=50.0, qtd=1, indice=1),
     ]
 
     resultado = carr.remover_item(carrinho, 0)
@@ -132,6 +146,18 @@ def test_tratar_desconto_zero():
     assert resultado == 100
 
 
+def test_nao_permite_desconto_negativo():
+
+    with pytest.raises(DescontoInvalidoError):
+        carr.calcular_desconto(100, -15)
+
+
+def test_nao_permite_desconto_maior_cem():
+
+    with pytest.raises(DescontoInvalidoError):
+        carr.calcular_desconto(100, 101)
+
+
 def test_aplica_taxa_no_valor_final():
 
     resultado = carr.aplica_taxa(100, 35)
@@ -144,6 +170,12 @@ def test_taxa_zero_nao_deve_alterar_total():
     resultado = carr.aplica_taxa(100, 0)
 
     assert resultado == 100
+
+
+def test_nao_permite_taxa_negativa():
+
+    with pytest.raises(TaxaInvalidaError):
+        carr.aplica_taxa(100, -15)
 
 
 def test_total_final_menos_descontos_mais_taxas():

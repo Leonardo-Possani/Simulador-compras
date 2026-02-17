@@ -9,6 +9,8 @@ from simulador.domain.exceptions import (
     ValorIncorretoError,
 )
 
+METODOS_VALIDOS = ("credito", "debito", "dinheiro")
+
 
 def fechar_venda_com_carrinho_valido(carrinho: list[ItemCarrinho]) -> Venda:
 
@@ -35,8 +37,14 @@ def aplicar_taxa_venda(venda: Venda, taxa: int) -> Venda:
     return nova_venda
 
 
-def registrar_pagamento(venda: Venda, pagamento: str) -> Venda:
+def valida_metodo_de_pagamento(pagamento: str) -> None:
+    
+    if pagamento not in METODOS_VALIDOS:
+        raise MetodoInvalidoError()
 
+
+def registrar_pagamento(venda: Venda, pagamento: str) -> Venda:
+    valida_metodo_de_pagamento(pagamento)
     nova_venda = replace(venda, pagamento=pagamento)
     return nova_venda
 
@@ -81,7 +89,7 @@ def venda_paga_no_credito(venda: Venda, valor_pago: int) -> Venda:
 
 
 def processar_pagamento(venda: Venda, valor_pago: int) -> Venda:
-
+    valida_metodo_de_pagamento(venda.pagamento)   
     if venda.pagamento == "dinheiro":
         resultado = venda_paga_no_dinheiro(venda, valor_pago)
         return resultado
@@ -93,9 +101,6 @@ def processar_pagamento(venda: Venda, valor_pago: int) -> Venda:
     elif venda.pagamento == "credito":
         resultado = venda_paga_no_credito(venda, valor_pago)
         return resultado
-
-    else:
-        raise MetodoInvalidoError()
 
 
 def extrair_itens_vendidos(venda: Venda) -> list[dict]:

@@ -1,98 +1,126 @@
-# 🛒 Simulador de Compras (PDV)
+# Simulador de Compras (PDV)
 
-Projeto pessoal para estudos de **backend** com foco em **DDD (Domain-Driven Design)**, **TDD** e regras de negócio de um PDV (ponto de venda). A ideia é manter o domínio simples, bem testado e fácil de evoluir.
+Projeto de estudo backend com foco em domínio e TDD.  
+Objetivo atual: levar o sistema ao estado `v1.0-domain-frozen` para ter regras explícitas, testes confiáveis e base pronta para migração futura para Java OO.
 
----
+## O que este projeto demonstra
 
-## 🎯 Objetivos deste repositório
+- Evolução orientada por regras de negócio explícitas.
+- Refatoração incremental guiada por testes.
+- Separação clara entre domínio e orquestração de caso de uso.
+- Preocupação com estabilidade de contrato antes de migrar de linguagem.
 
-- Praticar **Python** com orientação a domínio.
-- Exercitar **TDD** com testes unitários claros e objetivos.
-- Modelar regras de negócio de um PDV: carrinho, estoque, venda e checkout.
-- Construir um portfólio sólido para buscar estágio em backend.
+## Objetivo do Frozen
 
----
+O marco `v1.0-domain-frozen` será atingido quando todos os critérios abaixo forem verdadeiros:
 
-## 🧩 Domínio modelado
+- Todas as regras de negócio estão explícitas.
+- Falhas de negócio usam exceções de domínio (sem retorno silencioso).
+- Não há `dict`/estruturas ad-hoc como contrato primário do core.
+- Operações de domínio estão claras nos módulos de domínio.
+- Domínio não depende de I/O ou infraestrutura.
+- Há testes para cada regra e comportamento relevante.
+- Entidades têm invariantes claras e protegidas.
+- Finalização da venda é atômica e imutável.
 
-O sistema foi dividido em camadas e conceitos do domínio:
+## Estado Atual
 
-- **Carrinho**: itens e quantidades selecionadas.
-- **Estoque**: validação de disponibilidade e baixa após a venda.
-- **Venda**: descontos, taxas, pagamento e validações.
-- **Checkout**: orquestra o fluxo de fechamento da venda.
+- Camadas separadas em `domain` e `application`.
+- Fluxos principais modelados: carrinho, estoque, venda e checkout.
+- Evolução atual orientada por TDD e revisão de regras críticas.
 
----
+## Roadmap Oficial até `v1.0-domain-frozen`
 
-## 🧪 Testes (TDD)
+### Bloco A - Regras críticas (P0)
 
-Os testes unitários ficam em `tests/` e cobrem as regras do domínio.  
-Para rodar:
+- [x] A1 - Garantir regra de estoque na primeira inclusão no carrinho
+- [x] A2 - Formalizar limites numéricos (desconto e taxa)
+- [x] A3 - Validar método de pagamento de forma explícita
+- [ ] A4 - Definir pré-condições explícitas de sequência da venda
+
+### Bloco B - Imutabilidade e estado (P0)
+
+- [ ] B5 - Garantir imutabilidade real da venda finalizada
+- [ ] B6 - Garantir checkout atômico (all-or-nothing)
+
+### Bloco C - Modelo e contratos (P1)
+
+- [ ] C7 - Definir invariantes de entidades
+- [ ] C8 - Substituir contratos `dict` por tipos explícitos no domínio
+- [ ] C9 - Eliminar dependência de identidade por índice posicional
+
+### Bloco D - Polimento final (P1/P2)
+
+- [ ] D10 - Refinar hierarquia de exceções de domínio
+- [ ] D11 - Completar matriz de testes por regra
+
+### Bloco E - Release
+
+- [ ] Atualizar documentação final do domínio
+- [ ] Criar tag `v1.0-domain-frozen`
+
+## Estrutura do Projeto
 
 ```bash
-pytest
-```
-
----
-
-## 🧰 Tecnologias Utilizadas
-
-- **Python 3.10+**
-- **Pytest** (testes)
-- **Ruff** (lint)
-- **Pyright** (type hints)
-
----
-
-## 🗂 Estrutura do projeto
-
-```bash
-Simulador-compras
+simulador_compras
   ├── src/
   │   └── simulador/
-  │       ├── application/  # Casos de uso (ex.: checkout)
-  │       └── domain/       # Regras de negócio
-  ├── tests/                # Testes unitários
+  │       ├── application/  # Orquestração de casos de uso (checkout)
+  │       └── domain/       # Regras e operações de negócio
+  ├── tests/                # Testes unitários e de fluxo
   ├── pyproject.toml
   └── README.md
 ```
 
----
+## Como Executar Localmente
 
-## ▶️ Como executar localmente
+1. Clonar o repositório
 
-1. **Clone o repositório**
 ```bash
 git clone git@github.com:Leonardo-Possani/Simulador-compras.git
 cd Simulador-compras
 ```
 
-2. **Crie o ambiente e instale dependências**
+2. Criar ambiente virtual e instalar dependências
+
 ```bash
 python -m venv .venv
 source .venv/bin/activate
 pip install -e ".[dev]"
 ```
 
-3. **Execute os testes**
+3. Rodar testes
+
 ```bash
-pytest
+./venv/bin/python -m pytest -q
 ```
 
----
+## Qualidade de código
 
-## 🔧 Próximos passos (roadmap)
+Comandos úteis durante a evolução:
 
-- [ ] Interface GUI, CLI
-- [ ] Evoluir a modelagem para suportar múltiplos meios de pagamento
-- [ ] Criar uma API simples para expor o domínio (FastAPI/Flask)
-- [ ] Aumentar cobertura de testes
-- [ ] Estoque integrado
+```bash
+./venv/bin/python -m pytest -q
+ruff check .
+pyright
+```
 
----
+## Padrão de Commits
 
-## 🙋‍♂️ Sobre mim
+Formato oficial:
 
-Sou estudante de programação buscando **estágio em backend**.  
-Estou desenvolvendo este projeto como parte do meu aprendizado e portfólio.  
-Sugestões e feedbacks são bem-vindos!
+```text
+<type>(<scope>): <imperative short message>
+
+<objective technical description>
+
+- Technical bullet 1
+- Technical bullet 2
+- Technical bullet 3
+
+Impact:
+<architectural/domain impact>
+```
+
+Tipos permitidos: `feat`, `fix`, `refactor`, `test`, `docs`, `chore`, `freeze`  
+Escopos permitidos: `domain`, `carrinho`, `venda`, `estoque`, `checkout`, `exceptions`, `entities`, `usecase`, `architecture`

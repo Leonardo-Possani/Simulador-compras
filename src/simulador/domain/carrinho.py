@@ -1,5 +1,10 @@
 from simulador.domain.entities import ItemCarrinho, ResultadoCarrinho
-from simulador.domain.exceptions import IndiceInexistenteError, QuantidadeInvalidaError
+from simulador.domain.exceptions import (
+    DescontoInvalidoError,
+    IndiceInexistenteError,
+    QuantidadeInvalidaError,
+    TaxaInvalidaError,
+)
 
 # Buscar
 
@@ -52,6 +57,9 @@ def adicionar_item(
         item.qtd += quantidade
         return ResultadoCarrinho(item, carrinho)
 
+    if quantidade > qtd_estoque:
+        raise QuantidadeInvalidaError()
+
     produto = estoque[indice]
     item = ItemCarrinho(
         produto=produto["produto"], preco=produto["preco"], qtd=quantidade, indice=indice
@@ -84,13 +92,16 @@ def calcular_total(carrinho: list[ItemCarrinho]) -> float:
 
 
 def calcular_desconto(total: float, desconto: int) -> float:
-
+    if desconto < 0 or desconto > 100:
+        raise DescontoInvalidoError()
     total_de_desconto = total * (desconto / 100)
     total_com_desconto = total - total_de_desconto
     return total_com_desconto
 
 
 def aplica_taxa(total: float, taxa: int) -> float:
+    if taxa < 0:
+        raise TaxaInvalidaError()
     total_com_taxa = total + taxa
     return total_com_taxa
 

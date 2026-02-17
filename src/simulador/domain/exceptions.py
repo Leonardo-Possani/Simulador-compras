@@ -13,6 +13,13 @@ class IndiceInexistenteError(Exception):
     pass
 
 
+class DescontoInvalidoError(Exception):
+    pass
+
+
+class TaxaInvalidaError(Exception):
+    pass
+
 # Venda
 
 
@@ -30,6 +37,7 @@ class ValorIncorretoError(Exception):
 
 class MetodoInvalidoError(Exception):
     pass
+
 
 
 
