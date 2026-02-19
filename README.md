@@ -36,7 +36,7 @@ O marco `v1.0-domain-frozen` será atingido quando todos os critérios abaixo fo
 - [x] A1 - Garantir regra de estoque na primeira inclusão no carrinho
 - [x] A2 - Formalizar limites numéricos (desconto e taxa)
 - [x] A3 - Validar método de pagamento de forma explícita
-- [ ] A4 - Definir pré-condições explícitas de sequência da venda
+- [x] A4 - Definir pré-condições explícitas de sequência da venda
 
 ### Bloco B - Imutabilidade e estado (P0)
 

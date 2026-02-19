@@ -7,6 +7,7 @@ from simulador.domain.exceptions import (
     DescontoInvalidoError,
     DinheiroInsuficienteError,
     MetodoInvalidoError,
+    SequenciaVendaInvalidaError,
     TaxaInvalidaError,
     ValorIncorretoError,
 )
@@ -82,6 +83,34 @@ def test_venda_nao_permite_desconto_maior_que_cem():
         vd.aplicar_desconto(venda, 110)
 
 
+def test_venda_valida_total_com_desconto_calculado():
+
+    carrinho = [
+        ItemCarrinho(produto="mouse", preco=20.0, qtd=3, indice=0),
+        ItemCarrinho(produto="teclado", preco=50.0, qtd=1, indice=1),
+    ]
+    venda = Venda(itens=carrinho, total=110)
+
+    with pytest.raises(SequenciaVendaInvalidaError):
+        vd.valida_total_com_desconto_calculado(venda)
+
+
+def test_aplicar_taxa_so_roda_se_tiver_total_com_desconto_calculado():
+
+    carrinho = [
+        ItemCarrinho(produto="mouse", preco=20.0, qtd=3, indice=0),
+        ItemCarrinho(produto="teclado", preco=50.0, qtd=1, indice=1),
+    ]
+
+    venda = Venda(
+        itens=carrinho,
+        total=110,
+    )
+
+    with pytest.raises(SequenciaVendaInvalidaError):
+        vd.aplicar_taxa_venda(venda, 15)
+
+
 def test_aplicar_taxa_na_venda():
 
     carrinho = [
@@ -106,6 +135,32 @@ def test_venda_nao_permite_taxa_negativa():
     venda = Venda(itens=carrinho, total=110, total_com_desconto=99)
     with pytest.raises(TaxaInvalidaError):
         vd.aplicar_taxa_venda(venda, -15)
+
+
+def test_venda_valida_total_final_calculado():
+
+    carrinho = [
+        ItemCarrinho(produto="mouse", preco=20.0, qtd=3, indice=0),
+        ItemCarrinho(produto="teclado", preco=50.0, qtd=1, indice=1),
+    ]
+
+    venda = Venda(itens=carrinho, total=110, total_com_desconto=99)
+
+    with pytest.raises(SequenciaVendaInvalidaError):
+        vd.valida_total_final_calculado(venda)
+
+
+def test_venda_so_registra_pagamento_se_tiver_total_final_calculado():
+
+    carrinho = [
+        ItemCarrinho(produto="mouse", preco=20.0, qtd=3, indice=0),
+        ItemCarrinho(produto="teclado", preco=50.0, qtd=1, indice=1),
+    ]
+
+    venda = Venda(itens=carrinho, total=110, total_com_desconto=99)
+
+    with pytest.raises(SequenciaVendaInvalidaError):
+        vd.registrar_pagamento(venda, "debito")
 
 
 def test_registrar_pagamento_venda():
@@ -133,6 +188,19 @@ def test_valida_metodo_de_pagamento():
 
     with pytest.raises(MetodoInvalidoError):
         vd.registrar_pagamento(venda, "pix")
+
+
+def test_venda_em_dinheiro_valida_total_final_calculado():
+
+    carrinho = [
+        ItemCarrinho(produto="mouse", preco=20.0, qtd=3, indice=0),
+        ItemCarrinho(produto="teclado", preco=50.0, qtd=1, indice=1),
+    ]
+
+    venda = Venda(itens=carrinho, total=110, total_com_desconto=99)
+
+    with pytest.raises(SequenciaVendaInvalidaError):
+        vd.venda_paga_no_dinheiro(venda, valor_pago=114)
 
 
 def test_pagamento_em_dinheiro_calcula_troca():
@@ -181,6 +249,19 @@ def test_dinheiro_exato():
     assert resultado.troco is None
 
 
+def test_venda_em_debito_valida_total_final_calculado():
+
+    carrinho = [
+        ItemCarrinho(produto="mouse", preco=20.0, qtd=3, indice=0),
+        ItemCarrinho(produto="teclado", preco=50.0, qtd=1, indice=1),
+    ]
+
+    venda = Venda(itens=carrinho, total=110, total_com_desconto=99)
+
+    with pytest.raises(SequenciaVendaInvalidaError):
+        vd.venda_paga_no_debito(venda, valor_pago=114)
+
+
 def test_pagamento_debito():
 
     carrinho = [
@@ -208,6 +289,19 @@ def test_pagamento_debito_valor_pago_incorreto():
 
     with pytest.raises(ValorIncorretoError):
         vd.venda_paga_no_debito(venda, valor_pago=110)
+
+
+def test_venda_em_credito_valida_total_final_calculado():
+
+    carrinho = [
+        ItemCarrinho(produto="mouse", preco=20.0, qtd=3, indice=0),
+        ItemCarrinho(produto="teclado", preco=50.0, qtd=1, indice=1),
+    ]
+
+    venda = Venda(itens=carrinho, total=110, total_com_desconto=99)
+
+    with pytest.raises(SequenciaVendaInvalidaError):
+        vd.venda_paga_no_credito(venda, valor_pago=114)
 
 
 def test_pagamento_em_credido_a_vista():
@@ -254,6 +348,19 @@ def test_processar_pagamento():
     assert resultado.total_final == resultado.valor_pago
 
 
+def test_processar_pagamento_valida_metodo_de_pagamento_criado():
+
+    carrinho = [
+        ItemCarrinho(produto="mouse", preco=20.0, qtd=3, indice=0),
+        ItemCarrinho(produto="teclado", preco=50.0, qtd=1, indice=1),
+    ]
+
+    venda = Venda(itens=carrinho, total=110, total_com_desconto=99, total_final=114)
+
+    with pytest.raises(SequenciaVendaInvalidaError):
+        vd.processar_pagamento(venda, valor_pago=114)
+
+
 def test_processar_pagamento_nao_permite_metodo_invalido():
 
     carrinho = [
@@ -265,6 +372,18 @@ def test_processar_pagamento_nao_permite_metodo_invalido():
         itens=carrinho, total=110, total_com_desconto=99, total_final=114, pagamento="Pix"
     )
     with pytest.raises(MetodoInvalidoError):
+        vd.processar_pagamento(venda, valor_pago=114)
+
+
+def test_processar_pagamento_valida_total_final_calculado():
+
+    carrinho = [
+        ItemCarrinho(produto="mouse", preco=20.0, qtd=3, indice=0),
+        ItemCarrinho(produto="teclado", preco=50.0, qtd=1, indice=1),
+    ]
+
+    venda = Venda(itens=carrinho, total=110, total_com_desconto=99, pagamento="dinheiro")
+    with pytest.raises(SequenciaVendaInvalidaError):
         vd.processar_pagamento(venda, valor_pago=114)
 
 

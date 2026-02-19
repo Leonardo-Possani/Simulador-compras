@@ -6,10 +6,31 @@ from simulador.domain.exceptions import (
     CarrinhoInvalidoError,
     DinheiroInsuficienteError,
     MetodoInvalidoError,
+    SequenciaVendaInvalidaError,
     ValorIncorretoError,
 )
 
 METODOS_VALIDOS = ("credito", "debito", "dinheiro")
+
+
+def valida_metodo_de_pagamento(pagamento: str) -> None:
+
+    if pagamento is None:
+        raise SequenciaVendaInvalidaError()
+    if pagamento not in METODOS_VALIDOS:
+        raise MetodoInvalidoError()
+
+
+def valida_total_com_desconto_calculado(venda: Venda) -> None:
+
+    if venda.total_com_desconto is None:
+        raise SequenciaVendaInvalidaError()
+
+
+def valida_total_final_calculado(venda: Venda) -> None:
+
+    if venda.total_final is None:
+        raise SequenciaVendaInvalidaError()
 
 
 def fechar_venda_com_carrinho_valido(carrinho: list[ItemCarrinho]) -> Venda:
@@ -31,19 +52,15 @@ def aplicar_desconto(venda: Venda, desconto: int) -> Venda:
 
 def aplicar_taxa_venda(venda: Venda, taxa: int) -> Venda:
 
+    valida_total_com_desconto_calculado(venda)
     total_com_taxa = carr.aplica_taxa(venda.total_com_desconto, taxa)
-
     nova_venda = replace(venda, total_final=total_com_taxa)
     return nova_venda
 
 
-def valida_metodo_de_pagamento(pagamento: str) -> None:
-    
-    if pagamento not in METODOS_VALIDOS:
-        raise MetodoInvalidoError()
-
-
 def registrar_pagamento(venda: Venda, pagamento: str) -> Venda:
+
+    valida_total_final_calculado(venda)
     valida_metodo_de_pagamento(pagamento)
     nova_venda = replace(venda, pagamento=pagamento)
     return nova_venda
@@ -51,6 +68,7 @@ def registrar_pagamento(venda: Venda, pagamento: str) -> Venda:
 
 def venda_paga_no_dinheiro(venda: Venda, valor_pago: float) -> Venda:
 
+    valida_total_final_calculado(venda)
     if venda.pagamento == "dinheiro" and venda.total_final <= valor_pago:
         if venda.total_final == valor_pago:
             return venda
@@ -65,6 +83,7 @@ def venda_paga_no_dinheiro(venda: Venda, valor_pago: float) -> Venda:
 
 def venda_paga_no_debito(venda: Venda, valor_pago: int) -> Venda:
 
+    valida_total_final_calculado(venda)
     if venda.pagamento == "debito":
         if venda.total_final == valor_pago:
             nova_venda = replace(venda, valor_pago=valor_pago)
@@ -78,6 +97,7 @@ def venda_paga_no_debito(venda: Venda, valor_pago: int) -> Venda:
 
 def venda_paga_no_credito(venda: Venda, valor_pago: int) -> Venda:
 
+    valida_total_final_calculado(venda)
     if venda.pagamento == "credito":
         if venda.total_final == valor_pago:
             nova_venda = replace(venda, valor_pago=valor_pago)
@@ -89,7 +109,8 @@ def venda_paga_no_credito(venda: Venda, valor_pago: int) -> Venda:
 
 
 def processar_pagamento(venda: Venda, valor_pago: int) -> Venda:
-    valida_metodo_de_pagamento(venda.pagamento)   
+    valida_total_final_calculado(venda)
+    valida_metodo_de_pagamento(venda.pagamento)
     if venda.pagamento == "dinheiro":
         resultado = venda_paga_no_dinheiro(venda, valor_pago)
         return resultado

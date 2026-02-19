@@ -39,6 +39,8 @@ class MetodoInvalidoError(Exception):
     pass
 
 
+class SequenciaVendaInvalidaError(Exception):
+    pass
 
 
 
