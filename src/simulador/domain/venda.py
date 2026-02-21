@@ -1,3 +1,4 @@
+import copy
 from dataclasses import replace
 
 from simulador.domain import carrinho as carr
@@ -39,7 +40,9 @@ def fechar_venda_com_carrinho_valido(carrinho: list[ItemCarrinho]) -> Venda:
         raise CarrinhoInvalidoError()
     else:
         total = carr.calcular_total(carrinho)
-        return Venda(itens=carrinho, total=total)
+        carrinho_copia = copy.deepcopy(carrinho)
+        carrinho_final = tuple(carrinho_copia)
+        return Venda(itens=carrinho_final, total=total)
 
 
 def aplicar_desconto(venda: Venda, desconto: int) -> Venda:

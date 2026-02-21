@@ -24,6 +24,9 @@ def test_fluxo_finalizar_venda():
 
     assert resultado.estoque_atualizado[0].estoque == 7
     assert resultado.venda.total_final == 110
+    assert estoque[0].estoque == 10
+    assert resultado.estoque_atualizado is not estoque
+    assert estoque[0] is not resultado.estoque_atualizado[0]
 
 
 def test_fluxo_finalizar_venda_erro_estoque_insuficiente():
@@ -42,4 +45,7 @@ def test_fluxo_finalizar_venda_erro_estoque_insuficiente():
     
     with pytest.raises(EstoqueInsuficienteError):
         chek.finalizar_venda(carrinho_copia, estoque_copia, desconto=0, taxa=0, pagamento="dinheiro", valor_pago=110)
-
+    
+    assert estoque_copia == estoque
+    assert carrinho_copia == carrinho
+   

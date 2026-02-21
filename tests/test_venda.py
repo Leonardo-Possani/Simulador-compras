@@ -29,7 +29,33 @@ def test_fechar_venda_com_carrinho_valido():
 
     resultado = vd.fechar_venda_com_carrinho_valido(carrinho)
 
-    assert resultado.itens == carrinho
+    assert isinstance(resultado.itens, tuple)
+    assert resultado.itens[0] is not carrinho[0]
+
+
+def test_fechar_venda_garante_imutabilidade_do_carrinho():
+
+    carrinho = [
+        ItemCarrinho(produto="mouse", preco=20.0, qtd=3, indice=0),
+        ItemCarrinho(produto="teclado", preco=50.0, qtd=1, indice=1),
+    ]
+
+    resultado = vd.fechar_venda_com_carrinho_valido(carrinho)
+    carrinho[0].qtd = 99
+    assert resultado.itens[0].qtd == 3
+
+
+def test_fechar_venda_nao_permite_mutar_resultado_itens():
+    
+    carrinho = [
+        ItemCarrinho(produto="mouse", preco=20.0, qtd=3, indice=0),
+        ItemCarrinho(produto="teclado", preco=50.0, qtd=1, indice=1),
+    ]
+
+    resultado = vd.fechar_venda_com_carrinho_valido(carrinho)
+    
+    with pytest.raises(TypeError):
+        resultado.itens[0] = ItemCarrinho(produto="bolsa", preco=10.0, qtd=8, indice=3)
 
 
 def test_venda_calcula_total():

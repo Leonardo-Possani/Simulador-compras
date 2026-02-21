@@ -22,7 +22,7 @@ class ResultadoCarrinho:
 
 @dataclass(frozen=True)
 class Venda:
-    itens: list[ItemCarrinho]
+    itens: tuple[ItemCarrinho]
     total: float
 
     total_com_desconto: float | None = None

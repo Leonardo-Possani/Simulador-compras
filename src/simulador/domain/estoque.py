@@ -1,5 +1,7 @@
+import copy
+
+from simulador.domain.entities import Estoque, Produto
 from simulador.domain.exceptions import EstoqueInsuficienteError
-from simulador.domain.entities import Produto
 
 
 def valida_estoque_para_venda(itens_vendidos: list[dict], estoque: Estoque[list[Produto]]) -> bool:
@@ -15,7 +17,7 @@ def valida_estoque_para_venda(itens_vendidos: list[dict], estoque: Estoque[list[
 
 def venda_concluindo_baixar_estoque(itens_vendidos: list[dict], estoque: list[dict]) -> dict:
 
-    estoque_atualizado = estoque.copy()
+    estoque_atualizado = copy.deepcopy(estoque) 
 
     for item in itens_vendidos:
         indice = item["indice"]
