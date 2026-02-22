@@ -2,7 +2,7 @@ import copy
 from dataclasses import replace
 
 from simulador.domain import carrinho as carr
-from simulador.domain.entities import ItemCarrinho, Venda
+from simulador.domain.entities import ItemCarrinho, ItemVendido, Venda
 from simulador.domain.exceptions import (
     CarrinhoInvalidoError,
     DinheiroInsuficienteError,
@@ -127,13 +127,15 @@ def processar_pagamento(venda: Venda, valor_pago: int) -> Venda:
         return resultado
 
 
-def extrair_itens_vendidos(venda: Venda) -> list[dict]:
+def extrair_itens_vendidos(venda: Venda) -> tuple[ItemVendido]:
 
     itens_vendidos = []
     carrinho = venda.itens
 
     for itens in carrinho:
-        item = {"indice": itens.indice, "qtd": itens.qtd}
+        item = ItemVendido(indice=itens.indice, qtd=itens.qtd)
         itens_vendidos.append(item)
+    
+    itens_vendidos_final = tuple(itens_vendidos)
 
-    return itens_vendidos
+    return itens_vendidos_final

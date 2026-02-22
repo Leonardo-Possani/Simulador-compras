@@ -29,6 +29,12 @@ O marco `v1.0-domain-frozen` será atingido quando todos os critérios abaixo fo
 - Fluxos principais modelados: carrinho, estoque, venda e checkout.
 - Evolução atual orientada por TDD e revisão de regras críticas.
 
+## Regras Explícitas de Domínio (Preço e Estoque)
+
+- `Produto.preco <= 0` deve lançar `PrecoInvalidoError`.
+- `Produto.estoque <= 0` deve lançar `EstoqueInsuficienteError`.
+- Essas validações são aplicadas no domínio antes da inclusão de item no carrinho e durante a validação de estoque para venda.
+
 ## Roadmap Oficial até `v1.0-domain-frozen`
 
 ### Bloco A - Regras críticas (P0)
@@ -40,12 +46,12 @@ O marco `v1.0-domain-frozen` será atingido quando todos os critérios abaixo fo
 
 ### Bloco B - Imutabilidade e estado (P0)
 
-- [ ] B5 - Garantir imutabilidade real da venda finalizada
-- [ ] B6 - Garantir checkout atômico (all-or-nothing)
+- [x] B5 - Garantir imutabilidade real da venda finalizada
+- [x] B6 - Garantir checkout atômico (all-or-nothing)
 
 ### Bloco C - Modelo e contratos (P1)
 
-- [ ] C7 - Definir invariantes de entidades
+- [x] C7 - Definir invariantes de entidades
 - [ ] C8 - Substituir contratos `dict` por tipos explícitos no domínio
 - [ ] C9 - Eliminar dependência de identidade por índice posicional
 

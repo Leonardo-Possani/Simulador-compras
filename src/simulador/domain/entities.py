@@ -34,6 +34,12 @@ class Venda:
 
 
 @dataclass(frozen=True)
+class ItemVendido:
+    indice: int
+    qtd: int
+
+
+@dataclass(frozen=True)
 class ResultadoVenda:
     venda: Venda
     estoque_atualizado: list | None = None

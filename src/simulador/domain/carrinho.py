@@ -1,10 +1,13 @@
-from simulador.domain.entities import ItemCarrinho, ResultadoCarrinho
+from simulador.domain import estoque as etq
+
+from simulador.domain.entities import ItemCarrinho, ResultadoCarrinho, Produto
 from simulador.domain.exceptions import (
     DescontoInvalidoError,
     IndiceInexistenteError,
     QuantidadeInvalidaError,
     TaxaInvalidaError,
 )
+
 
 # Buscar
 
@@ -19,7 +22,7 @@ def item_existe_no_carrinho(carrinho: list[ItemCarrinho], indice: int) -> ItemCa
 # Validações
 
 
-def valida_indice_no_estoque(estoque: list[dict], indice: int) -> None:
+def valida_indice_no_estoque(estoque: list[Produto], indice: int) -> None:
     if indice < 0 or indice >= len(estoque):
         raise IndiceInexistenteError()
 
@@ -40,7 +43,7 @@ def valida_qtd_negativa_ou_zero_adicionada_no_carrinho(quantidade: int) -> None:
 
 
 def adicionar_item(
-    carrinho: list[ItemCarrinho], estoque: list[dict], indice: int, quantidade: int
+    carrinho: list[ItemCarrinho], estoque: list[Produto], indice: int, quantidade: int
 ) -> ResultadoCarrinho:
 
     valida_indice_no_estoque(estoque, indice)
@@ -49,7 +52,7 @@ def adicionar_item(
 
     item = item_existe_no_carrinho(carrinho, indice)
 
-    qtd_estoque = estoque[indice]["estoque"]
+    qtd_estoque = estoque[indice].estoque
 
     if item:
         qtd_existente_carrinho = item.qtd
@@ -61,9 +64,8 @@ def adicionar_item(
         raise QuantidadeInvalidaError()
 
     produto = estoque[indice]
-    item = ItemCarrinho(
-        produto=produto["produto"], preco=produto["preco"], qtd=quantidade, indice=indice
-    )
+    etq.valida_produto_estoque(produto)
+    item = ItemCarrinho(produto=produto.produto, preco=produto.preco, qtd=quantidade, indice=indice)
     carrinho.append(item)
     return ResultadoCarrinho(item, carrinho)
 

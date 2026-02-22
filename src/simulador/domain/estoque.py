@@ -1,27 +1,41 @@
 import copy
 
-from simulador.domain.entities import Estoque, Produto
-from simulador.domain.exceptions import EstoqueInsuficienteError
+from simulador.domain.entities import ItemVendido, Produto
+from simulador.domain.exceptions import (
+    EstoqueInsuficienteError,
+    NomeInvalidoError,
+    PrecoInvalidoError,
+)
 
 
-def valida_estoque_para_venda(itens_vendidos: list[dict], estoque: Estoque[list[Produto]]) -> bool:
+def valida_estoque_para_venda(itens_vendidos: tuple[ItemVendido], estoque: list[Produto]) -> bool:
 
     for item in itens_vendidos:
-        indice = item["indice"]
-        qtd = item["qtd"]
-
+        indice = item.indice
+        qtd = item.qtd
+        valida_produto_estoque(estoque[indice])
         if estoque[indice].estoque < qtd:
             raise EstoqueInsuficienteError()
     return True
 
 
-def venda_concluindo_baixar_estoque(itens_vendidos: list[dict], estoque: list[dict]) -> dict:
+def valida_produto_estoque(produto: Produto) -> None:
 
-    estoque_atualizado = copy.deepcopy(estoque) 
+    if not produto.produto:
+        raise NomeInvalidoError()
+    if produto.preco <= 0:
+        raise PrecoInvalidoError()
+    if produto.estoque <= 0:
+        raise EstoqueInsuficienteError()
+    
+
+def venda_concluindo_baixar_estoque(itens_vendidos: list[dict], estoque: list[Produto]) -> list[Produto]:
+
+    estoque_atualizado = copy.deepcopy(estoque)
 
     for item in itens_vendidos:
-        indice = item["indice"]
-        qtd = item["qtd"]
+        indice = item.indice
+        qtd = item.qtd
 
         estoque_atualizado[indice].estoque -= qtd
 

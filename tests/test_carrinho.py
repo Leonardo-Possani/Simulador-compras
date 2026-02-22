@@ -1,19 +1,18 @@
 import pytest
 
-
+from simulador.domain import carrinho as carr
+from simulador.domain.entities import ItemCarrinho, Produto
 from simulador.domain.exceptions import (
     DescontoInvalidoError,
     IndiceInexistenteError,
     QuantidadeInvalidaError,
     TaxaInvalidaError,
 )
-from simulador.domain import carrinho as carr
-from simulador.domain.entities import ItemCarrinho
 
 
 def test_adicionar_item_valido():
 
-    estoque = [{"produto": "mouse", "preco": 20.0, "estoque": 10}]
+    estoque = [Produto(produto="mouse", preco=20.0, estoque=10)]
     carrinho = []
     resultado = carr.adicionar_item(carrinho, estoque, 0, 3)
 
@@ -28,7 +27,7 @@ def test_adicionar_item_valido():
 
 def test_adicionar_mesmo_item_soma_quantidade():
 
-    estoque = [{"produto": "mouse", "preco": 20.0, "estoque": 10}]
+    estoque = [Produto(produto="mouse", preco=20.0, estoque=10)]
     carrinho = [
         ItemCarrinho(produto="mouse", preco=20.0, qtd=3, indice=0),
     ]
@@ -41,7 +40,7 @@ def test_adicionar_mesmo_item_soma_quantidade():
 
 def test_nao_permite_quantidade_menor_ou_igual_zero():
 
-    estoque = [{"produto": "mouse", "preco": 20.0, "estoque": 10}]
+    estoque = [Produto(produto="mouse", preco=20.0, estoque=10)]
     carrinho = []
 
     with pytest.raises(QuantidadeInvalidaError):
@@ -50,16 +49,16 @@ def test_nao_permite_quantidade_menor_ou_igual_zero():
 
 def test_nao_permite_adicionar_qtd_maior_que_estoque():
 
-    estoque = [{"produto": "mouse", "preco": 20.0, "estoque": 5}]
+    estoque = [Produto(produto="mouse", preco=20.0, estoque=5)]
     carrinho = []
 
     with pytest.raises(QuantidadeInvalidaError):
         carr.adicionar_item(carrinho, estoque, 0, 6)
 
 
-def test_nao_permite_quantidade_maior_que_estoque():
+def test_nao_permite_quantidade_maior_que_estoque_item_ja_existente():
 
-    estoque = [{"produto": "mouse", "preco": 20.0, "estoque": 5}]
+    estoque = [Produto(produto="mouse", preco=20.0, estoque=5)]
     carrinho = [
         ItemCarrinho(produto="nouse", preco=20.0, qtd=3, indice=0),
     ]
@@ -70,7 +69,7 @@ def test_nao_permite_quantidade_maior_que_estoque():
 
 def test_nao_permite_indice_invalido():
 
-    estoque = [{"produto": "mouse", "preco": 20.0, "estoque": 10}]
+    estoque = [Produto(produto="mouse", preco=20.0, estoque=10)]
     carrinho = []
     with pytest.raises(IndiceInexistenteError):
         carr.adicionar_item(carrinho, estoque, -1, 1)

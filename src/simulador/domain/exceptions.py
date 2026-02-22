@@ -20,6 +20,14 @@ class DescontoInvalidoError(Exception):
 class TaxaInvalidaError(Exception):
     pass
 
+
+class NomeInvalidoError(Exception):
+    pass
+
+
+class PrecoInvalidoError(Exception):
+    pass
+
 # Venda
 
 

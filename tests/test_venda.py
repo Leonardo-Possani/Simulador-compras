@@ -432,7 +432,7 @@ def test_extrair_itens_vendidos():
     resultado = vd.extrair_itens_vendidos(venda)
 
     assert len(resultado) == 2
-    assert resultado[0]["indice"] == 0
-    assert resultado[1]["indice"] == 1
-    assert resultado[0]["qtd"] == 3
-    assert resultado[1]["qtd"] == 1
+    assert resultado[0].indice == 0
+    assert resultado[1].indice == 1
+    assert resultado[0].qtd == 3
+    assert resultado[1].qtd == 1
