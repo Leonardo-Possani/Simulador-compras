@@ -1,11 +1,13 @@
 from dataclasses import dataclass
 
+from simulador.domain.types import MetodoPagamento
+
 # Carrinho
 
 
 @dataclass
 class ItemCarrinho:
-    indice: int
+    produto_id: int
     produto: str
     preco: float
     qtd: int
@@ -16,6 +18,21 @@ class ResultadoCarrinho:
     item: ItemCarrinho
     carrinho: list[ItemCarrinho]
 
+
+# Estoque
+
+
+@dataclass
+class Produto:
+    produto: str 
+    preco: float 
+    estoque: int
+    produto_id: int
+
+
+@dataclass(frozen=True)
+class Estoque:
+    estoque: list[Produto]
 
 # Venda
 
@@ -28,33 +45,21 @@ class Venda:
     total_com_desconto: float | None = None
     total_final: float | None = None
 
-    pagamento: str | None = None
+    pagamento: MetodoPagamento | None = None
     valor_pago: float | None = None
     troco: float | None = None
 
 
 @dataclass(frozen=True)
 class ItemVendido:
-    indice: int
+    produto_id: int
     qtd: int
 
 
 @dataclass(frozen=True)
 class ResultadoVenda:
     venda: Venda
-    estoque_atualizado: list | None = None
+    estoque_atualizado: list[Produto]
 
 
-# Estoque
-
-
-@dataclass
-class Produto:
-    produto: str | None = None
-    preco: float | None = None
-    estoque: int | None = None
-
-
-@dataclass(frozen=True)
-class Estoque:
-    estoque: list[Produto]
+   

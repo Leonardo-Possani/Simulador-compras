@@ -17,8 +17,10 @@ def finalizar_venda(
     resultado = vd.aplicar_desconto(resultado, desconto)
 
     resultado = vd.aplicar_taxa_venda(resultado, taxa)
+    
+    metodo = vd.valida_metodo_de_pagamento(pagamento)
 
-    resultado = vd.registrar_pagamento(resultado, pagamento)
+    resultado = vd.registrar_pagamento(resultado, metodo)
 
     resultado = vd.processar_pagamento(resultado, valor_pago)
     venda_processada = resultado

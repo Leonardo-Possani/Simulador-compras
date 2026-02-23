@@ -9,7 +9,7 @@ class QuantidadeInvalidaError(Exception):
     pass
 
 
-class IndiceInexistenteError(Exception):
+class ProdutoIdInexistenteError(Exception):
     pass
 
 
@@ -27,6 +27,7 @@ class NomeInvalidoError(Exception):
 
 class PrecoInvalidoError(Exception):
     pass
+
 
 # Venda
 
@@ -49,7 +50,3 @@ class MetodoInvalidoError(Exception):
 
 class SequenciaVendaInvalidaError(Exception):
     pass
-
-
-
-

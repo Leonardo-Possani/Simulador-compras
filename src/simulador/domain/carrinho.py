@@ -3,7 +3,7 @@ from simulador.domain import estoque as etq
 from simulador.domain.entities import ItemCarrinho, ResultadoCarrinho, Produto
 from simulador.domain.exceptions import (
     DescontoInvalidoError,
-    IndiceInexistenteError,
+    ProdutoIdInexistenteError,
     QuantidadeInvalidaError,
     TaxaInvalidaError,
 )
@@ -12,26 +12,14 @@ from simulador.domain.exceptions import (
 # Buscar
 
 
-def item_existe_no_carrinho(carrinho: list[ItemCarrinho], indice: int) -> ItemCarrinho | None:
+def item_existe_no_carrinho(carrinho: list[ItemCarrinho], produto_id: int) -> ItemCarrinho | None:
     for item in carrinho:
-        if item.indice == indice:
+        if item.produto_id == produto_id:
             return item
     return None
 
 
 # Validações
-
-
-def valida_indice_no_estoque(estoque: list[Produto], indice: int) -> None:
-    if indice < 0 or indice >= len(estoque):
-        raise IndiceInexistenteError()
-
-
-def valida_qtd_atual_carrinho_menor_estoque(
-    qtd_existente_carrinho: int, quantidade: int, qtd_estoque: int
-) -> None:
-    if qtd_existente_carrinho + quantidade > qtd_estoque:
-        raise QuantidadeInvalidaError()
 
 
 def valida_qtd_negativa_ou_zero_adicionada_no_carrinho(quantidade: int) -> None:
@@ -43,41 +31,42 @@ def valida_qtd_negativa_ou_zero_adicionada_no_carrinho(quantidade: int) -> None:
 
 
 def adicionar_item(
-    carrinho: list[ItemCarrinho], estoque: list[Produto], indice: int, quantidade: int
+    carrinho: list[ItemCarrinho], estoque: list[Produto], produto_id: int, quantidade: int
 ) -> ResultadoCarrinho:
 
-    valida_indice_no_estoque(estoque, indice)
+    item = etq.valida_produto_id_retorna_produto_estoque(estoque, produto_id)
+    produto = item
+    qtd_estoque = item.estoque
 
     valida_qtd_negativa_ou_zero_adicionada_no_carrinho(quantidade)
 
-    item = item_existe_no_carrinho(carrinho, indice)
-
-    qtd_estoque = estoque[indice].estoque
+    item = item_existe_no_carrinho(carrinho, produto_id)
 
     if item:
         qtd_existente_carrinho = item.qtd
-        valida_qtd_atual_carrinho_menor_estoque(qtd_existente_carrinho, quantidade, qtd_estoque)
+        etq.valida_qtd_atual_carrinho_menor_estoque(qtd_existente_carrinho, quantidade, qtd_estoque)
         item.qtd += quantidade
         return ResultadoCarrinho(item, carrinho)
 
     if quantidade > qtd_estoque:
         raise QuantidadeInvalidaError()
 
-    produto = estoque[indice]
     etq.valida_produto_estoque(produto)
-    item = ItemCarrinho(produto=produto.produto, preco=produto.preco, qtd=quantidade, indice=indice)
+    item = ItemCarrinho(
+        produto=produto.produto, preco=produto.preco, qtd=quantidade, produto_id=produto_id
+    )
     carrinho.append(item)
     return ResultadoCarrinho(item, carrinho)
 
 
-def remover_item(carrinho: list[ItemCarrinho], indice: int) -> ResultadoCarrinho:
+def remover_item(carrinho: list[ItemCarrinho], produto_id: int) -> ResultadoCarrinho:
 
-    item = item_existe_no_carrinho(carrinho, indice)
+    item = item_existe_no_carrinho(carrinho, produto_id)
     if item:
         carrinho.remove(item)
         return ResultadoCarrinho(item, carrinho)
 
-    raise IndiceInexistenteError()
+    raise ProdutoIdInexistenteError()
 
 
 # Cálculos financeiros

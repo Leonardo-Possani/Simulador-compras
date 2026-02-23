@@ -2,6 +2,7 @@ import copy
 from dataclasses import replace
 
 from simulador.domain import carrinho as carr
+from simulador.domain.types import MetodoPagamento
 from simulador.domain.entities import ItemCarrinho, ItemVendido, Venda
 from simulador.domain.exceptions import (
     CarrinhoInvalidoError,
@@ -11,15 +12,14 @@ from simulador.domain.exceptions import (
     ValorIncorretoError,
 )
 
-METODOS_VALIDOS = ("credito", "debito", "dinheiro")
 
-
-def valida_metodo_de_pagamento(pagamento: str) -> None:
+def valida_metodo_de_pagamento(pagamento: str | MetodoPagamento | None) -> MetodoPagamento:
 
     if pagamento is None:
         raise SequenciaVendaInvalidaError()
-    if pagamento not in METODOS_VALIDOS:
+    if pagamento not in MetodoPagamento:
         raise MetodoInvalidoError()
+    return MetodoPagamento(pagamento)
 
 
 def valida_total_com_desconto_calculado(venda: Venda) -> None:
@@ -61,18 +61,18 @@ def aplicar_taxa_venda(venda: Venda, taxa: int) -> Venda:
     return nova_venda
 
 
-def registrar_pagamento(venda: Venda, pagamento: str) -> Venda:
+def registrar_pagamento(venda: Venda, pagamento: MetodoPagamento) -> Venda:
 
     valida_total_final_calculado(venda)
-    valida_metodo_de_pagamento(pagamento)
-    nova_venda = replace(venda, pagamento=pagamento)
+    metodo = valida_metodo_de_pagamento(pagamento)
+    nova_venda = replace(venda, pagamento=metodo)
     return nova_venda
 
 
 def venda_paga_no_dinheiro(venda: Venda, valor_pago: float) -> Venda:
 
     valida_total_final_calculado(venda)
-    if venda.pagamento == "dinheiro" and venda.total_final <= valor_pago:
+    if venda.pagamento == MetodoPagamento.DINHEIRO and venda.total_final <= valor_pago:
         if venda.total_final == valor_pago:
             return venda
         nova_venda = replace(venda, troco=valor_pago - venda.total_final)
@@ -87,7 +87,7 @@ def venda_paga_no_dinheiro(venda: Venda, valor_pago: float) -> Venda:
 def venda_paga_no_debito(venda: Venda, valor_pago: int) -> Venda:
 
     valida_total_final_calculado(venda)
-    if venda.pagamento == "debito":
+    if venda.pagamento == MetodoPagamento.DEBITO:
         if venda.total_final == valor_pago:
             nova_venda = replace(venda, valor_pago=valor_pago)
             return nova_venda
@@ -101,7 +101,7 @@ def venda_paga_no_debito(venda: Venda, valor_pago: int) -> Venda:
 def venda_paga_no_credito(venda: Venda, valor_pago: int) -> Venda:
 
     valida_total_final_calculado(venda)
-    if venda.pagamento == "credito":
+    if venda.pagamento == MetodoPagamento.CREDITO:
         if venda.total_final == valor_pago:
             nova_venda = replace(venda, valor_pago=valor_pago)
             return nova_venda
@@ -114,28 +114,28 @@ def venda_paga_no_credito(venda: Venda, valor_pago: int) -> Venda:
 def processar_pagamento(venda: Venda, valor_pago: int) -> Venda:
     valida_total_final_calculado(venda)
     valida_metodo_de_pagamento(venda.pagamento)
-    if venda.pagamento == "dinheiro":
+    if venda.pagamento == MetodoPagamento.DINHEIRO:
         resultado = venda_paga_no_dinheiro(venda, valor_pago)
         return resultado
 
-    elif venda.pagamento == "debito":
+    elif venda.pagamento == MetodoPagamento.DEBITO:
         resultado = venda_paga_no_debito(venda, valor_pago)
         return resultado
 
-    elif venda.pagamento == "credito":
+    elif venda.pagamento == MetodoPagamento.CREDITO:
         resultado = venda_paga_no_credito(venda, valor_pago)
         return resultado
 
 
-def extrair_itens_vendidos(venda: Venda) -> tuple[ItemVendido]:
+def extrair_itens_vendidos(venda: Venda) -> tuple[ItemVendido, ...]:
 
     itens_vendidos = []
     carrinho = venda.itens
 
     for itens in carrinho:
-        item = ItemVendido(indice=itens.indice, qtd=itens.qtd)
+        item = ItemVendido(produto_id=itens.produto_id, qtd=itens.qtd)
         itens_vendidos.append(item)
     
     itens_vendidos_final = tuple(itens_vendidos)
 
-    return itens_vendidos_final
+    return itens_vendidos_final 

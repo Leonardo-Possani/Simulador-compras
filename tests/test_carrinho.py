@@ -4,7 +4,7 @@ from simulador.domain import carrinho as carr
 from simulador.domain.entities import ItemCarrinho, Produto
 from simulador.domain.exceptions import (
     DescontoInvalidoError,
-    IndiceInexistenteError,
+    ProdutoIdInexistenteError,
     QuantidadeInvalidaError,
     TaxaInvalidaError,
 )
@@ -12,7 +12,7 @@ from simulador.domain.exceptions import (
 
 def test_adicionar_item_valido():
 
-    estoque = [Produto(produto="mouse", preco=20.0, estoque=10)]
+    estoque = [Produto(produto="mouse", preco=20.0, estoque=10, produto_id=0)]
     carrinho = []
     resultado = carr.adicionar_item(carrinho, estoque, 0, 3)
 
@@ -20,16 +20,16 @@ def test_adicionar_item_valido():
     assert item.produto == "mouse"
     assert item.preco == 20.0
     assert item.qtd == 3
-    assert item.indice == 0
+    assert item.produto_id == 0
 
     assert len(resultado.carrinho) == 1
 
 
 def test_adicionar_mesmo_item_soma_quantidade():
 
-    estoque = [Produto(produto="mouse", preco=20.0, estoque=10)]
+    estoque = [Produto(produto="mouse", preco=20.0, estoque=10, produto_id=0)]
     carrinho = [
-        ItemCarrinho(produto="mouse", preco=20.0, qtd=3, indice=0),
+        ItemCarrinho(produto="mouse", preco=20.0, qtd=3, produto_id=0),
     ]
 
     resultado = carr.adicionar_item(carrinho, estoque, 0, 2)
@@ -40,7 +40,7 @@ def test_adicionar_mesmo_item_soma_quantidade():
 
 def test_nao_permite_quantidade_menor_ou_igual_zero():
 
-    estoque = [Produto(produto="mouse", preco=20.0, estoque=10)]
+    estoque = [Produto(produto="mouse", preco=20.0, estoque=10, produto_id=0)]
     carrinho = []
 
     with pytest.raises(QuantidadeInvalidaError):
@@ -49,7 +49,7 @@ def test_nao_permite_quantidade_menor_ou_igual_zero():
 
 def test_nao_permite_adicionar_qtd_maior_que_estoque():
 
-    estoque = [Produto(produto="mouse", preco=20.0, estoque=5)]
+    estoque = [Produto(produto="mouse", preco=20.0, estoque=5, produto_id=0)]
     carrinho = []
 
     with pytest.raises(QuantidadeInvalidaError):
@@ -58,9 +58,9 @@ def test_nao_permite_adicionar_qtd_maior_que_estoque():
 
 def test_nao_permite_quantidade_maior_que_estoque_item_ja_existente():
 
-    estoque = [Produto(produto="mouse", preco=20.0, estoque=5)]
+    estoque = [Produto(produto="mouse", preco=20.0, estoque=5, produto_id=0)]
     carrinho = [
-        ItemCarrinho(produto="nouse", preco=20.0, qtd=3, indice=0),
+        ItemCarrinho(produto="nouse", preco=20.0, qtd=3, produto_id=0),
     ]
 
     with pytest.raises(QuantidadeInvalidaError):
@@ -69,16 +69,16 @@ def test_nao_permite_quantidade_maior_que_estoque_item_ja_existente():
 
 def test_nao_permite_indice_invalido():
 
-    estoque = [Produto(produto="mouse", preco=20.0, estoque=10)]
+    estoque = [Produto(produto="mouse", preco=20.0, estoque=10, produto_id=0)]
     carrinho = []
-    with pytest.raises(IndiceInexistenteError):
+    with pytest.raises(ProdutoIdInexistenteError):
         carr.adicionar_item(carrinho, estoque, -1, 1)
 
 
 def test_remove_item_do_carrinho():
     carrinho = [
-        ItemCarrinho(produto="mouse", preco=20.0, qtd=3, indice=0),
-        ItemCarrinho(produto="teclado", preco=50.0, qtd=1, indice=1),
+        ItemCarrinho(produto="mouse", preco=20.0, qtd=3, produto_id=0),
+        ItemCarrinho(produto="teclado", preco=50.0, qtd=1, produto_id=1),
     ]
 
     resultado = carr.remover_item(carrinho, 0)
@@ -91,18 +91,18 @@ def test_remove_item_do_carrinho():
 def test_nao_remove_item_inexistente_do_carrinho():
 
     carrinho = [
-        ItemCarrinho(produto="mouse", preco=20.0, qtd=3, indice=0),
-        ItemCarrinho(produto="teclado", preco=50.0, qtd=1, indice=1),
+        ItemCarrinho(produto="mouse", preco=20.0, qtd=3, produto_id=0),
+        ItemCarrinho(produto="teclado", preco=50.0, qtd=1, produto_id=1),
     ]
-    with pytest.raises(IndiceInexistenteError):
+    with pytest.raises(ProdutoIdInexistenteError):
         carr.remover_item(carrinho, 2)
 
 
 def test_remove_item_com_ordem_diferente_do_indice():
 
     carrinho = [
-        ItemCarrinho(produto="mouse", preco=20.0, qtd=3, indice=0),
-        ItemCarrinho(produto="teclado", preco=50.0, qtd=1, indice=1),
+        ItemCarrinho(produto="mouse", preco=20.0, qtd=3, produto_id=0),
+        ItemCarrinho(produto="teclado", preco=50.0, qtd=1, produto_id=1),
     ]
 
     resultado = carr.remover_item(carrinho, 0)
@@ -115,8 +115,8 @@ def test_remove_item_com_ordem_diferente_do_indice():
 def test_calcular_total_bruto_do_carrinho():
 
     carrinho = [
-        ItemCarrinho(produto="mouse", preco=20.0, qtd=2, indice=0),
-        ItemCarrinho(produto="teclado", preco=50.0, qtd=1, indice=1),
+        ItemCarrinho(produto="mouse", preco=20.0, qtd=2, produto_id=0),
+        ItemCarrinho(produto="teclado", preco=50.0, qtd=1, produto_id=1),
     ]
     resultado = carr.calcular_total(carrinho)
     assert resultado == 90.0
@@ -180,8 +180,8 @@ def test_nao_permite_taxa_negativa():
 def test_total_final_menos_descontos_mais_taxas():
 
     carrinho = [
-        ItemCarrinho(produto="mouse", preco=20.0, qtd=2, indice=0),
-        ItemCarrinho(produto="teclado", preco=50.0, qtd=1, indice=1),
+        ItemCarrinho(produto="mouse", preco=20.0, qtd=2, produto_id=0),
+        ItemCarrinho(produto="teclado", preco=50.0, qtd=1, produto_id=1),
     ]
 
     resultado = carr.total_final(carrinho, 5, 8)
@@ -192,8 +192,8 @@ def test_total_final_menos_descontos_mais_taxas():
 def test_validar_total_sem_descomtos_sem_taxa():
 
     carrinho = [
-        ItemCarrinho(produto="mouse", preco=20.0, qtd=3, indice=0),
-        ItemCarrinho(produto="teclado", preco=50.0, qtd=1, indice=1),
+        ItemCarrinho(produto="mouse", preco=20.0, qtd=3, produto_id=0),
+        ItemCarrinho(produto="teclado", preco=50.0, qtd=1, produto_id=1),
     ]
 
     resultado = carr.total_final(carrinho, 0, 0)

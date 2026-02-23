@@ -52,8 +52,8 @@ O marco `v1.0-domain-frozen` será atingido quando todos os critérios abaixo fo
 ### Bloco C - Modelo e contratos (P1)
 
 - [x] C7 - Definir invariantes de entidades
-- [ ] C8 - Substituir contratos `dict` por tipos explícitos no domínio
-- [ ] C9 - Eliminar dependência de identidade por índice posicional
+- [x] C8 - Substituir contratos `dict` por tipos explícitos no domínio
+- [x] C9 - Eliminar dependência de identidade por índice posicional
 
 ### Bloco D - Polimento final (P1/P2)
 
