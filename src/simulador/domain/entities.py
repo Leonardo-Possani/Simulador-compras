@@ -38,8 +38,16 @@ class Estoque:
 
 
 @dataclass(frozen=True)
+class ItemVendaFechada:
+    produto_id: int
+    produto: str
+    preco: float
+    qtd: int
+
+
+@dataclass(frozen=True)
 class Venda:
-    itens: tuple[ItemCarrinho]
+    itens: tuple[ItemVendaFechada, ...]
     total: float
 
     total_com_desconto: float | None = None

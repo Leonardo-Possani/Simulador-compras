@@ -11,11 +11,11 @@ from simulador.domain.exceptions import (
 
 
 def test_valida_indice_no_estoque():
-    
+
     estoque = [
         Produto(produto="teclado", preco=59.0, estoque=10, produto_id=0),
         Produto(produto="cadeira", preco=990.0, estoque=2, produto_id=51),
-        Produto(produto="mouse", preco=25, estoque=2, produto_id=36)
+        Produto(produto="mouse", preco=25, estoque=2, produto_id=36),
     ]
 
     with pytest.raises(ProdutoIdInexistenteError):
@@ -24,8 +24,8 @@ def test_valida_indice_no_estoque():
     resultado = etq.valida_produto_id_retorna_produto_estoque(estoque, produto_id=36)
 
     assert resultado.produto == "mouse"
-    
-    
+
+
 def test_valida_estoque_para_venda():
 
     estoque = [
@@ -35,7 +35,7 @@ def test_valida_estoque_para_venda():
         Produto(produto="mouse", preco=10, estoque=-1, produto_id=3),
         Produto(produto="mouse", preco=0, estoque=-1, produto_id=4),
         Produto(produto="mouse", preco=10, estoque=0, produto_id=5),
-        Produto(produto="mouse", preco=10, estoque=5, produto_id=6)
+        Produto(produto="mouse", preco=10, estoque=5, produto_id=6),
     ]
 
     itens_vendidos = (
@@ -53,12 +53,12 @@ def test_valida_estoque_para_venda():
         ItemVendido(produto_id=0, qtd=3),
         ItemVendido(produto_id=3, qtd=1),
     )
-    
+
     itens_vendidos3 = (
         ItemVendido(produto_id=0, qtd=3),
         ItemVendido(produto_id=4, qtd=1),
     )
-    
+
     itens_vendidos4 = (
         ItemVendido(produto_id=0, qtd=3),
         ItemVendido(produto_id=5, qtd=1),
@@ -66,23 +66,23 @@ def test_valida_estoque_para_venda():
     itens_vendidos5 = (
         ItemVendido(produto_id=0, qtd=3),
         ItemVendido(produto_id=6, qtd=6),
-    )   
+    )
 
     with pytest.raises(NomeInvalidoError):
-        etq.valida_estoque_para_venda(itens_vendidos, estoque)         
+        etq.valida_estoque_para_venda(itens_vendidos, estoque)
 
     with pytest.raises(PrecoInvalidoError):
-        etq.valida_estoque_para_venda(itens_vendidos1, estoque)         
-    
+        etq.valida_estoque_para_venda(itens_vendidos1, estoque)
+
     with pytest.raises(EstoqueInsuficienteError):
         etq.valida_estoque_para_venda(itens_vendidos2, estoque)
 
     with pytest.raises(PrecoInvalidoError):
         etq.valida_estoque_para_venda(itens_vendidos3, estoque)
-        
+
     with pytest.raises(EstoqueInsuficienteError):
         etq.valida_estoque_para_venda(itens_vendidos4, estoque)
-        
+
     with pytest.raises(EstoqueInsuficienteError):
         etq.valida_estoque_para_venda(itens_vendidos5, estoque)
 
@@ -125,10 +125,7 @@ def test_venda_concluindo_baixar_estoque():
         Produto(produto="teclado", preco=49.90, estoque=10, produto_id=1),
     ]
 
-    itens_vendidos = (
-            ItemVendido(produto_id=0, qtd=3),
-            ItemVendido(produto_id=1, qtd=1)
-            )
+    itens_vendidos = (ItemVendido(produto_id=0, qtd=3), ItemVendido(produto_id=1, qtd=1))
 
     resultado = etq.venda_concluindo_baixar_estoque(itens_vendidos, estoque)
 
@@ -151,11 +148,12 @@ def test_baixar_qtd_do_estoque():
     ]
 
     resultado_novo_estoque = etq.baixar_qtd_do_estoque(estoque, produto_id=48, qtd=5)
-    
-    produto_novo = etq.valida_produto_id_retorna_produto_estoque(resultado_novo_estoque, produto_id=48)
+
+    produto_novo = etq.valida_produto_id_retorna_produto_estoque(
+        resultado_novo_estoque, produto_id=48
+    )
     produto_original = etq.valida_produto_id_retorna_produto_estoque(estoque, produto_id=48)
-    
+
     assert produto_novo.estoque == 5
     assert produto_original.estoque == 10
     assert produto_original is not produto_novo
-

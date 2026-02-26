@@ -1,52 +1,71 @@
+
+# Domain
+
+class DomainError(Exception):
+    pass
+
 # Carrinho
 
 
-class EstoqueInsuficienteError(Exception):
+class CarrinhoError(DomainError):
     pass
 
 
-class QuantidadeInvalidaError(Exception):
+class TaxaInvalidaError(CarrinhoError):
     pass
 
 
-class ProdutoIdInexistenteError(Exception):
+class QuantidadeInvalidaError(CarrinhoError):
     pass
 
 
-class DescontoInvalidoError(Exception):
+class DescontoInvalidoError(CarrinhoError):
     pass
 
 
-class TaxaInvalidaError(Exception):
+# Estoque
+
+class EstoqueError(DomainError):
     pass
 
 
-class NomeInvalidoError(Exception):
+class PrecoInvalidoError(EstoqueError):
     pass
 
 
-class PrecoInvalidoError(Exception):
+class EstoqueInsuficienteError(EstoqueError):
+    pass
+
+
+class ProdutoIdInexistenteError(EstoqueError):
+    pass
+
+
+class NomeInvalidoError(EstoqueError):
     pass
 
 
 # Venda
 
-
-class CarrinhoInvalidoError(Exception):
+class VendaError(DomainError):
     pass
 
 
-class DinheiroInsuficienteError(Exception):
+class CarrinhoInvalidoError(VendaError):
     pass
 
 
-class ValorIncorretoError(Exception):
+class DinheiroInsuficienteError(VendaError):
     pass
 
 
-class MetodoInvalidoError(Exception):
+class ValorIncorretoError(VendaError):
     pass
 
 
-class SequenciaVendaInvalidaError(Exception):
+class MetodoInvalidoError(VendaError):
+    pass
+
+
+class SequenciaVendaInvalidaError(VendaError):
     pass

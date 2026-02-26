@@ -3,7 +3,7 @@ from dataclasses import replace
 
 from simulador.domain import carrinho as carr
 from simulador.domain.types import MetodoPagamento
-from simulador.domain.entities import ItemCarrinho, ItemVendido, Venda
+from simulador.domain.entities import ItemCarrinho, ItemVendaFechada, ItemVendido, Venda
 from simulador.domain.exceptions import (
     CarrinhoInvalidoError,
     DinheiroInsuficienteError,
@@ -34,6 +34,15 @@ def valida_total_final_calculado(venda: Venda) -> None:
         raise SequenciaVendaInvalidaError()
 
 
+def garante_item_vendido_imutavel(carrinho: list[ItemCarrinho]) -> list[ItemVendaFechada]:
+    
+    novo_carrinho = []
+    for item in carrinho:
+        novo_item = ItemVendaFechada(produto=item.produto, preco=item.preco, qtd=item.qtd, produto_id=item.produto_id)
+        novo_carrinho.append(novo_item)
+    return novo_carrinho
+
+
 def fechar_venda_com_carrinho_valido(carrinho: list[ItemCarrinho]) -> Venda:
 
     if not carrinho:
@@ -41,7 +50,8 @@ def fechar_venda_com_carrinho_valido(carrinho: list[ItemCarrinho]) -> Venda:
     else:
         total = carr.calcular_total(carrinho)
         carrinho_copia = copy.deepcopy(carrinho)
-        carrinho_final = tuple(carrinho_copia)
+        carrinho_item_imutavel = garante_item_vendido_imutavel(carrinho_copia)
+        carrinho_final = tuple(carrinho_item_imutavel)
         return Venda(itens=carrinho_final, total=total)
 
 

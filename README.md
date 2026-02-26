@@ -57,7 +57,7 @@ O marco `v1.0-domain-frozen` será atingido quando todos os critérios abaixo fo
 
 ### Bloco D - Polimento final (P1/P2)
 
-- [ ] D10 - Refinar hierarquia de exceções de domínio
+- [x] D10 - Refinar hierarquia de exceções de domínio
 - [ ] D11 - Completar matriz de testes por regra
 
 ### Bloco E - Release
