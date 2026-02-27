@@ -48,6 +48,7 @@ def fechar_venda_com_carrinho_valido(carrinho: list[ItemCarrinho]) -> Venda:
     if not carrinho:
         raise CarrinhoInvalidoError()
     else:
+        carr.nao_permite_produto_id_duplicado_no_carrinho(carrinho)
         total = carr.calcular_total(carrinho)
         carrinho_copia = copy.deepcopy(carrinho)
         carrinho_item_imutavel = garante_item_vendido_imutavel(carrinho_copia)

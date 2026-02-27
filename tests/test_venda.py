@@ -84,6 +84,18 @@ def test_venda_calcula_total():
     assert resultado.total == 110
 
 
+def test_nao_permite_fechar_venda_com_produto_id_duplicado():
+
+    carrinho = [
+        ItemCarrinho(produto="mouse", preco=20.0, qtd=3, produto_id=0),
+        ItemCarrinho(produto="teclado", preco=50.0, qtd=5, produto_id=1),
+        ItemCarrinho(produto="teclado", preco=50.0, qtd=5, produto_id=1),
+    ]
+
+    with pytest.raises(CarrinhoInvalidoError):
+        vd.fechar_venda_com_carrinho_valido(carrinho)
+        
+
 def test_venda_com_desconto():
 
     carrinho = (
@@ -244,7 +256,7 @@ def test_venda_em_dinheiro_valida_total_final_calculado():
         vd.venda_paga_no_dinheiro(venda, valor_pago=114)
 
 
-def test_pagamento_em_dinheiro_calcula_troca():
+def test_pagamento_em_dinheiro_calcula_troco():
 
     carrinho = (
         ItemVendaFechada(produto="mouse", preco=20.0, qtd=3, produto_id=0),
@@ -345,7 +357,7 @@ def test_venda_em_credito_valida_total_final_calculado():
         vd.venda_paga_no_credito(venda, valor_pago=114)
 
 
-def test_pagamento_em_credido_a_vista():
+def test_pagamento_em_credito_a_vista():
 
     carrinho = (
         ItemVendaFechada(produto="mouse", preco=20.0, qtd=3, produto_id=0),

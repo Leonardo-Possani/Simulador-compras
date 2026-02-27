@@ -6,6 +6,7 @@ from simulador.domain.exceptions import (
     ProdutoIdInexistenteError,
     QuantidadeInvalidaError,
     TaxaInvalidaError,
+    CarrinhoInvalidoError
 )
 
 
@@ -26,6 +27,12 @@ def valida_qtd_negativa_ou_zero_adicionada_no_carrinho(quantidade: int) -> None:
     if quantidade <= 0:
         raise QuantidadeInvalidaError()
 
+
+def nao_permite_produto_id_duplicado_no_carrinho(carrinho: list[ItemCarrinho]) -> None:
+
+    ids = [item.produto_id for item in carrinho]
+    if len(ids) != len(set(ids)):
+        raise CarrinhoInvalidoError()
 
 # Mutações do carrinho
 

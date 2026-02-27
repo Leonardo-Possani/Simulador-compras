@@ -28,12 +28,22 @@ O marco `v1.0-domain-frozen` será atingido quando todos os critérios abaixo fo
 - Camadas separadas em `domain` e `application`.
 - Fluxos principais modelados: carrinho, estoque, venda e checkout.
 - Evolução atual orientada por TDD e revisão de regras críticas.
+- Status: `v1.0-domain-frozen` atingido (escopo de portfólio).
 
-## Regras Explícitas de Domínio (Preço e Estoque)
+## Regras Explícitas de Domínio (Preço e Estoque, Carrinho)
 
 - `Produto.preco <= 0` deve lançar `PrecoInvalidoError`.
 - `Produto.estoque <= 0` deve lançar `EstoqueInsuficienteError`.
+- Carrinho com `produto_id` duplicado deve lançar `CarrinhoInvalidoError`.
 - Essas validações são aplicadas no domínio antes da inclusão de item no carrinho e durante a validação de estoque para venda.
+
+## Escopo Congelado (`v1.0-domain-frozen`)
+
+- Regras de negócio críticas explícitas no domínio.
+- Exceções de domínio organizadas por contexto (`Carrinho`, `Estoque`, `Venda`).
+- Contratos tipados e sem identidade por índice posicional.
+- Venda finalizada com snapshot imutável de itens.
+- Checkout com garantia all-or-nothing validada por testes.
 
 ## Roadmap Oficial até `v1.0-domain-frozen`
 
@@ -58,12 +68,16 @@ O marco `v1.0-domain-frozen` será atingido quando todos os critérios abaixo fo
 ### Bloco D - Polimento final (P1/P2)
 
 - [x] D10 - Refinar hierarquia de exceções de domínio
-- [ ] D11 - Completar matriz de testes por regra
+- [X] D11 - Completar matriz de testes por regra
 
 ### Bloco E - Release
 
-- [ ] Atualizar documentação final do domínio
-- [ ] Criar tag `v1.0-domain-frozen`
+- [x] Atualizar documentação final do domínio
+- [X] Criar tag `v1.0-domain-frozen`
+
+## Próximo Passo
+
+Este projeto será refeito em Java usando Programação Orientada a Objetos (POO), mantendo as mesmas regras de domínio como base de comparação de design e qualidade.
 
 ## Estrutura do Projeto
 
