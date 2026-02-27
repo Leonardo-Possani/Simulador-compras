@@ -4,9 +4,10 @@ from simulador.domain import estoque as etq
 from simulador.domain.entities import ItemVendido, Produto
 from simulador.domain.exceptions import (
     EstoqueInsuficienteError,
-    ProdutoIdInexistenteError,
     NomeInvalidoError,
     PrecoInvalidoError,
+    ProdutoIdInexistenteError,
+    QuantidadeInvalidaError,
 )
 
 
@@ -85,6 +86,17 @@ def test_valida_estoque_para_venda():
 
     with pytest.raises(EstoqueInsuficienteError):
         etq.valida_estoque_para_venda(itens_vendidos5, estoque)
+
+
+def test_nao_permite_item_vendido_com_quantidade_negativa_ou_zero():
+
+    estoque = [Produto(produto="mouse", preco=20.0, estoque=10, produto_id=1)]
+
+    with pytest.raises(QuantidadeInvalidaError):
+        etq.valida_estoque_para_venda((ItemVendido(produto_id=1, qtd=0),), estoque)
+
+    with pytest.raises(QuantidadeInvalidaError):
+        etq.valida_estoque_para_venda((ItemVendido(produto_id=1, qtd=-2),), estoque)
 
 
 def test_valida_erros_de_produto_estoque():

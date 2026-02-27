@@ -1,4 +1,3 @@
-
 from copy import deepcopy
 
 import pytest
@@ -6,7 +5,11 @@ import pytest
 from simulador.application import checkout as chek
 from simulador.domain import estoque as etq
 from simulador.domain.entities import ItemCarrinho, Produto
-from simulador.domain.exceptions import CarrinhoInvalidoError, EstoqueInsuficienteError, MetodoInvalidoError
+from simulador.domain.exceptions import (
+    CarrinhoInvalidoError,
+    EstoqueInsuficienteError,
+    MetodoInvalidoError,
+)
 
 
 def test_fluxo_finalizar_venda():
@@ -91,5 +94,4 @@ def test_fluxo_finalizar_venda_nao_permite_metodo_pagamento_invalido():
     
     assert estoque_copia == estoque
     assert carrinho_copia == carrinho
-
 

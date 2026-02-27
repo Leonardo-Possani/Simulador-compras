@@ -72,5 +72,5 @@ extraPaths = [
   "src",
   "src/simulador"
 ]
-typeCheckingMode = "off"  # Você pode mudar para "basic" ou "strict"
+typeCheckingMode = "basic"  # Você pode mudar para "basic" ou "strict"
 

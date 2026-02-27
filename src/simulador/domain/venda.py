@@ -2,7 +2,6 @@ import copy
 from dataclasses import replace
 
 from simulador.domain import carrinho as carr
-from simulador.domain.types import MetodoPagamento
 from simulador.domain.entities import ItemCarrinho, ItemVendaFechada, ItemVendido, Venda
 from simulador.domain.exceptions import (
     CarrinhoInvalidoError,
@@ -11,6 +10,7 @@ from simulador.domain.exceptions import (
     SequenciaVendaInvalidaError,
     ValorIncorretoError,
 )
+from simulador.domain.types import MetodoPagamento
 
 
 def valida_metodo_de_pagamento(pagamento: str | MetodoPagamento | None) -> MetodoPagamento:

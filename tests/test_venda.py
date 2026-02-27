@@ -1,9 +1,9 @@
 from dataclasses import FrozenInstanceError
+
 import pytest
 
 from simulador.domain import venda as vd
-from simulador.domain.types import MetodoPagamento
-from simulador.domain.entities import ItemCarrinho, Venda, ItemVendaFechada
+from simulador.domain.entities import ItemCarrinho, ItemVendaFechada, Venda
 from simulador.domain.exceptions import (
     CarrinhoInvalidoError,
     DescontoInvalidoError,
@@ -13,6 +13,7 @@ from simulador.domain.exceptions import (
     TaxaInvalidaError,
     ValorIncorretoError,
 )
+from simulador.domain.types import MetodoPagamento
 
 
 def test_nao_permite_fechar_venda_com_carrinho_vazio():

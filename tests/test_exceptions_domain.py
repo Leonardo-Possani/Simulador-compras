@@ -1,23 +1,20 @@
 from simulador.domain.exceptions import (
-    
+    CarrinhoError,
     CarrinhoInvalidoError,
     DescontoInvalidoError,
     DinheiroInsuficienteError,
     DomainError,
-    CarrinhoError,
     EstoqueError,
     EstoqueInsuficienteError,
+    MetodoInvalidoError,
+    NomeInvalidoError,
+    PrecoInvalidoError,
+    ProdutoIdInexistenteError,
+    QuantidadeInvalidaError,
     SequenciaVendaInvalidaError,
     TaxaInvalidaError,
     ValorIncorretoError,
     VendaError,
-    QuantidadeInvalidaError,
-    ProdutoIdInexistenteError,
-    PrecoInvalidoError,
-    MetodoInvalidoError,
-    NomeInvalidoError
-
-
 )
 
 
@@ -40,4 +37,3 @@ def test_hierarquia_excecoes_dominio():
     assert issubclass(ValorIncorretoError, VendaError)
     assert issubclass(DinheiroInsuficienteError, VendaError)
     assert issubclass(CarrinhoInvalidoError, VendaError)
-

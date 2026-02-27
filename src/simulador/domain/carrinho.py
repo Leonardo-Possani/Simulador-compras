@@ -1,12 +1,12 @@
 from simulador.domain import estoque as etq
 
-from simulador.domain.entities import ItemCarrinho, ResultadoCarrinho, Produto
+from simulador.domain.entities import ItemCarrinho, Produto, ResultadoCarrinho
 from simulador.domain.exceptions import (
+    CarrinhoInvalidoError,
     DescontoInvalidoError,
     ProdutoIdInexistenteError,
     QuantidadeInvalidaError,
     TaxaInvalidaError,
-    CarrinhoInvalidoError
 )
 
 

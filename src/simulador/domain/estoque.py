@@ -6,12 +6,14 @@ from simulador.domain.exceptions import (
     NomeInvalidoError,
     PrecoInvalidoError,
     ProdutoIdInexistenteError,
-    QuantidadeInvalidaError
+    QuantidadeInvalidaError,
 )
 
 
 def baixar_qtd_do_estoque(estoque: list[Produto], produto_id: int, qtd: int) -> list[Produto]:
-
+    
+    if qtd <= 0:
+        raise QuantidadeInvalidaError()
     estoque_copia = copy.deepcopy(estoque)
 
     produto = valida_produto_id_retorna_produto_estoque(estoque_copia, produto_id)
@@ -42,6 +44,8 @@ def valida_qtd_atual_carrinho_menor_estoque(
 def valida_estoque_para_venda(itens_vendidos: tuple[ItemVendido, ...], estoque: list[Produto]) -> bool:
 
     for item in itens_vendidos:
+        if item.qtd <= 0:
+            raise QuantidadeInvalidaError()
         produto = valida_produto_id_retorna_produto_estoque(estoque, item.produto_id)
         valida_produto_estoque(produto)
         if produto.estoque < item.qtd:
@@ -67,7 +71,6 @@ def venda_concluindo_baixar_estoque(itens_vendidos: tuple[ItemVendido, ...], est
         novo_estoque_final = novo_estoque_baixado
         
     return novo_estoque_final
-
 
 
 
